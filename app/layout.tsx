@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     siteName: "nnyez",
     images: [
       {
-        url: "/port.png", // Puedes crear una imagen de 1200x630px en /public para cuando compartan tu link
+        url: "/port.jpeg", // Puedes crear una imagen de 1200x630px en /public para cuando compartan tu link
         width: 1200,
         height: 630,
       },
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "nnyez - El portafolio de los desarrolladores", // <--- Corregido
     description: "Encuentra y conecta con los mejores programadores.", // <--- Corregido
-    images: ["/port.png"], // Opcional
+    images: ["/port.jpeg"], // Opcional
   },
   // Si usas la Opción 1 (automática), borra este bloque de icons:
   /* icons: {
