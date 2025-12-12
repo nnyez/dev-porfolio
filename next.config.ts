@@ -4,7 +4,6 @@ const nextConfig = {
 
   images: {
     
-    unoptimized: true,
     // Aquí es donde defines los patrones de dominio permitidos
     remotePatterns: [
       {
