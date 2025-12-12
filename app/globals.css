@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #261343;
+  --foreground: #fffee0;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-quicksand: var(--font-quicksand);
+  --font-opensans: var(--font-opensans);
+  --font-roboto-mono: var(--font-roboto-mono);
+
+  --color-primary: #320d6e;
+  --color-secondary: #261343;
+  --color-font: #fffee0;
+  --color-accent: #b693ed;
+
+  --color-resalt: #fffcb8;
+  --color-alt: #520d6e;
+  --color-resalt-alt: #130d6e;
+
+  /* Morado -> Magenta -> Naranja quemado (no amarillo) -> Rosa */
+  /* Gama de verdes y azules tecnológicos */
+  --color-a: #c9a4ff; /* Verde negro */
+  --color-b: #432b67; /* Verde bosque */
+  --color-c: #674f8b; /* Verde matriz */
+  --color-d: #917cb0; /* Verde medio */
+  --color-e: #cba9ff; /* Verde menta */
+  --color-f: #dbc8f8; /* Verde claro */
+  --color-g: #c1b5d4; /* Turquesa (el acento) */
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+  }
+} */
+
+@theme {
+  --animate-fade-rainbow: fade-rainbow 3s linear infinite;
+  @keyframes fade-rainbow {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 300% 50%;
+    }
+  }
+}
+
+@layer base {
+  h1 {
+    font-size: var(--text-5xl);
+  }
+  h2 {
+    font-size: var(--text-4xl);
+  }
+  h3 {
+    font-size: var(--text-3xl);
+  }
+  h4 {
+    font-size: var(--text-2xl);
+  }
+  p {
+    font-size: var(--text-xl);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+    font-family: var(--font-quicksand);
+  }
+  p {
+    font-family: var(--font-opensans);
+  }
+
+  span {
+    font-family: var(--font-roboto-mono);
+    font-weight: 800;
+  }
+
+  h1 span {
+    font-weight: 900;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
