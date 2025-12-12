@@ -45,9 +45,8 @@
 - ✅ Instalación local paso a paso
 - ✅ Configuración completa de Firebase
 - ✅ Variables de entorno
-- ✅ Despliegue en Vercel
-- ✅ Despliegue en Firebase Hosting
-- ✅ Configuración de dominio personalizado
+- ✅ Despliegue en Vercel (Recomendado)
+- ✅ Configuración de dominio personalizado en Vercel
 - ✅ Monitoreo y mantenimiento
 - ✅ Troubleshooting (6 problemas comunes)
 - ✅ Backup y recuperación

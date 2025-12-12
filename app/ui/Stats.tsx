@@ -16,7 +16,7 @@ export function Stats() {
                 <div className="">
                     <h1 className="font-black text-6xl">100% de excelencia</h1>
                 </div>
-                <div className="flex items-center flex-1 w-full my-10 gap-x-5">
+                <div className="flex items-center flex-1 w-full my-10 gap-x-5 hover:scale-110 transition-all duration-300">
                     <div className="animate-fade-rainbow h-10 flex-1 rounded-full bg-linear-[90deg,var(--color-a),var(--color-b),var(--color-c),var(--color-d),var(--color-e),var(--color-a)] bg-size-[300%]"></div>
                 </div>
             </div>

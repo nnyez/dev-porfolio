@@ -1,16 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // ... otras configuraciones si las tienes
+  // Optimizado para Vercel (no usar output: 'export')
 
   images: {
-    
-    // Aquí es donde defines los patrones de dominio permitidos
     remotePatterns: [
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com" ,
       },
-  
       {
         protocol: "https",
         hostname: "nnyez.github.io",
@@ -25,8 +22,8 @@ const nextConfig = {
       },
     ],
   },
-
-  
 };
+
+module.exports = nextConfig;
 
 module.exports = nextConfig;

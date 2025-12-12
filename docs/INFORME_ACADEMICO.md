@@ -113,7 +113,7 @@ Portfolio Dev resuelve estos problemas mediante:
 
 ### 4.1 Fases del Proyecto
 
-#### FASE 1: Planificación y Análisis (Semanas 1-2)
+#### FASE 1: Planificación y Análisis
 **Actividades:**
 - Análisis de requisitos
 - Definición de arquitectura
@@ -125,7 +125,7 @@ Portfolio Dev resuelve estos problemas mediante:
 - Esquema de base de datos
 - Wireframes
 
-#### FASE 2: Configuración del Proyecto (Semana 3)
+#### FASE 2: Configuración del Proyecto
 **Actividades:**
 - Setup del proyecto Next.js
 - Configuración de Firebase
@@ -146,7 +146,7 @@ pnpm install
 - Tailwind CSS 4
 ```
 
-#### FASE 3: Desarrollo del Backend (Semanas 4-6)
+#### FASE 3: Desarrollo del Backend 
 **Autenticación (firebaseAuth.ts):**
 - Implementación de Firebase Auth
 - Email/Contraseña
@@ -164,7 +164,7 @@ pnpm install
 - Esquema Zod para validación
 - Tipado seguro de datos
 
-#### FASE 4: Desarrollo Frontend (Semanas 7-10)
+#### FASE 4: Desarrollo Frontend 
 **Autenticación UI:**
 - Login/Register pages
 - Google Sign-In button
@@ -189,17 +189,17 @@ pnpm install
 - Sistema de solicitudes
 - Panel administrativo
 
-#### FASE 5: Testing y Validación (Semana 11)
+#### FASE 5: Testing y Validación 
 **Pruebas realizadas:**
 - Pruebas manuales funcionales
 - Testing de autenticación
 - Validación de formularios
 - Testing de roles y permisos
 
-#### FASE 6: Despliegue y Documentación (Semana 12)
+#### FASE 6: Despliegue y Documentación 
 **Despliegue:**
 - Build de producción
-- Configuración de Firebase Hosting
+- Configuración de Vercel
 - Implementación de variables de entorno
 - Setup de dominio personalizado
 

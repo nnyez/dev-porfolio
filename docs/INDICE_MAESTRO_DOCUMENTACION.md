@@ -111,9 +111,8 @@ docs/
 - ✅ Variables de entorno
 - ✅ Despliegue en producción
   - Preparación pre-despliegue
-  - Despliegue en Vercel
-  - Despliegue en Firebase Hosting
-  - Configurar dominio personalizado
+  - Despliegue en Vercel (Recomendado)
+  - Configurar dominio personalizado en Vercel
 - ✅ Monitoreo y mantenimiento
 - ✅ Troubleshooting (6 problemas comunes)
 - ✅ Backup y recuperación

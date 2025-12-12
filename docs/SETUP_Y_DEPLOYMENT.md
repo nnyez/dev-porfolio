@@ -41,7 +41,7 @@ git --version       # v2.30.0 o superior
 |----------|----------|--------|
 | Firebase | Backend, Auth, BD | https://firebase.google.com |
 | Google Cloud | Project management | https://cloud.google.com |
-| Vercel / Netlify | Hosting | https://vercel.com o https://netlify.com |
+| Vercel | Hosting (Recomendado) | https://vercel.com |
 | GitHub | Versionamiento | https://github.com |
 
 ### 1.3 Conocimientos Requeridos
@@ -424,77 +424,88 @@ vercel --prod
 https://proyect-app-xxxxx.vercel.app
 ```
 
-### 5.3 Desplegar en Firebase Hosting
+### 5.3 Desplegar en Vercel (Recomendado)
 
-**Alternativa a Vercel**
+**Opción simplificada y recomendada**
 
-#### Paso 1: Instalar Firebase CLI
+#### Paso 1: Instalar Vercel CLI
 
 ```bash
-npm install -g firebase-tools
+npm install -g vercel
 
 # Verificar
-firebase --version
+vercel --version
 ```
 
-#### Paso 2: Login y Initialize
+#### Paso 2: Conectar repositorio
 
 ```bash
-# Login a Firebase
-firebase login
+# Desde la carpeta del proyecto
+vercel
 
-# Inicializar proyecto
-firebase init hosting
-# Seleccionar proyecto: Portfolio Dev
-# Preguntas:
-# - Public directory: .next
-# - Single-page app: yes
-# - Overwrite: no
+# Seguir las instrucciones:
+# 1. Confirm project setup
+# 2. Link to existing project o crear nuevo
+# 3. Seleccionar framework: Next.js
+# 4. Build settings automáticos
 ```
 
-#### Paso 3: Build y Deploy
+#### Paso 3: Configurar variables de entorno
+
+En Vercel Dashboard:
+```
+Project > Settings > Environment Variables
+
+Agregar:
+├── NEXT_PUBLIC_FIREBASE_API_KEY = tu_api_key
+├── NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = tu_auth_domain
+├── NEXT_PUBLIC_FIREBASE_PROJECT_ID = tu_project_id
+├── NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET = tu_storage_bucket
+├── NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = tu_sender_id
+└── NEXT_PUBLIC_FIREBASE_APP_ID = tu_app_id
+```
+
+#### Paso 4: Deploy automático
 
 ```bash
-# Build
-pnpm build
+# Despliegue a staging
+vercel
 
-# Deploy
-firebase deploy --only hosting
+# Despliegue a producción
+vercel --prod
 
 # URL resultado
-https://portfolio-dev-xxxxx.web.app
+https://proyect-app.vercel.app
 ```
 
-### 5.4 Configurar Dominio Personalizado
+#### Actualizaciones automáticas
 
-#### En Vercel:
-```
-Project Settings > Domains
-├── Add domain
-├── Ingresar: tu-dominio.com
-├── Seguir instrucciones DNS
-└── Esperar 10-30 min
-```
+- Cada push a `main` → Despliegue automático a producción
+- Cada PR → Preview automático en Vercel
+- Sin pasos manuales adicionales
 
-#### En Firebase Hosting:
-```
-Hosting > Domains
-├── Add custom domain
-├── Ingresar: tu-dominio.com
-├── Verificar DNS
-└── Esperar validación
-```
-
-#### Configurar DNS (GoDaddy, Namecheap, etc):
+### 5.4 Configurar Dominio Personalizado en Vercel
 
 ```
-Registrador de dominio:
-├── Ir a DNS settings
-├── Agregar record A o CNAME
-│   - Nombre: @ (para raíz) o www
-│   - Valor: IP de Vercel o valor de Firebase
-├── Guardar
-└── Esperar 10-30 minutos
+Vercel Dashboard > Project Settings > Domains
+
+1. Agregar dominio
+   Input: tu-dominio.com
+
+2. Seleccionar tipo:
+   ├── Dominio Vercel (gratis): usar subdominio
+   └── Dominio personalizado: apuntar DNS
+
+3. Configurar DNS (si es personalizado):
+   Registrador de dominio:
+   ├── Ir a DNS settings
+   ├── Agregar CNAME record
+   │   - Nombre: @ o www
+   │   - Valor: cname.vercel-dns.com
+   ├── Guardar
+   └── Esperar 10-30 minutos
+
+4. Validación automática en Vercel
 ```
 
 ---

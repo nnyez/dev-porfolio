@@ -7,7 +7,7 @@ export default function Interesting() {
       <div className="flex items-center justify-center">
         <Stats />
       </div>
-      <div className="relative aspect-square max-w-150">
+      <div className="relative aspect-square max-w-150 hover:scale-110 transition-all duration-300">
         <Image src={"/dev.svg"} fill alt="devcode"></Image>
       </div>
     </section>

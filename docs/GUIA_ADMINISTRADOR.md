@@ -745,11 +745,8 @@ Si está saturado:
 
 **Paso 2: Reiniciar Servicio**
 ```bash
-# Si usas Vercel
+# Desplegar cambios a Vercel
 vercel --prod
-
-# Si usas Firebase Hosting
-firebase deploy --only hosting
 
 # Esperar 2-5 minutos
 ```

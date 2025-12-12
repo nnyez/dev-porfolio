@@ -272,7 +272,7 @@ Si necesitas presentar el proyecto, aquí está lo más importante:
 ### Slide 3: Stack Tecnológico
 - Frontend: React 19, Next.js 16, TypeScript, Tailwind CSS
 - Backend: Firebase (Auth, Firestore, Storage)
-- Hosting: Vercel / Firebase Hosting
+- Hosting: Vercel (Recomendado)
 - Extras: RxJS, React Hook Form, Zod
 
 ### Slide 4: Arquitectura

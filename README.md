@@ -3,6 +3,7 @@
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.0.7-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.2.0-blue?style=flat-square&logo=react)](https://react.dev/)
 [![Firebase](https://img.shields.io/badge/Firebase-12.6.0-orange?style=flat-square&logo=firebase)](https://firebase.google.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-Hosting-000000?style=flat-square&logo=vercel)](https://vercel.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-06b6d4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 [![Documentación](https://img.shields.io/badge/Documentación-500%2B%20páginas-brightgreen?style=flat-square&logo=readme)](docs/COMIENZA_AQUI.md)
@@ -204,23 +205,29 @@ git push origin main # GitHub Pages (con Actions)
 
 ## 🚀 Despliegue
 
-### GitHub Pages
-```bash
-# 1. Asegurar: output: "export" en next.config.ts
-# 2. Push a main
-git push origin main
-# 3. GitHub Actions despliega automáticamente
-# URL: https://usuario.github.io/portfolio-dev
+### Vercel (Recomendado)
+
+#### Opción 1: Desde el Navegador (Más Fácil) ⭐
+```
+1. Ir a https://vercel.com
+2. Click: Add New > Project > Import Git Repository
+3. Seleccionar repositorio: proyect-app
+4. Agregar variables Firebase
+5. Click Deploy
 ```
 
-### Firebase Hosting
+👉 **[Guía Visual Paso a Paso](VERCEL_WEB_METHOD.md)**
+
+#### Opción 2: Desde la CLI
 ```bash
-pnpm build
-firebase deploy
-# URL: https://portfolio-dev.web.app
+npm i -g vercel
+vercel --prod
 ```
 
-**📖 Guía completa:** [INFORME_DESARROLLO.md - Sección 7](INFORME_DESARROLLO.md#7-guía-de-despliegue)
+**📖 Documentación:**
+- 🌐 [Guía Visual Web](VERCEL_WEB_METHOD.md) - Con capturas y detalles
+- 🚀 [Guía Rápida Vercel](VERCEL_DEPLOYMENT.md) - 5 minutos (2 opciones)
+- 📚 [Guía Completa Setup & Deployment](docs/SETUP_Y_DEPLOYMENT.md#5-despliegue-en-producción)
 
 ---
 
@@ -285,15 +292,6 @@ firebase deploy
 
 ---
 
-## 🤝 Contribuir
-
-¿Quieres contribuir al proyecto? Ver [CONTRIBUTING.md](CONTRIBUTING.md) para:
-- Cómo reportar bugs
-- Cómo solicitar features
-- Estándares de código
-- Proceso de Pull Requests
-
----
 
 ## 📞 Soporte
 
@@ -330,14 +328,6 @@ Este proyecto es privado. Todos los derechos reservados.
 └─────────────────────────────────────────┘
 ```
 
-### 📚 Documentación Disponible
-
-✅ 500+ páginas  
-✅ 100,000+ palabras  
-✅ 100+ ejemplos de código  
-✅ 150+ tablas y diagramas  
-✅ 50+ preguntas respondidas  
-✅ Lista para presentación académica  
 
 ---
 
