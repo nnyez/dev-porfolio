@@ -23,12 +23,13 @@ Este documento sirve como **mapa central** para toda la documentación del proye
 
 | Métrica | Cantidad |
 |---------|----------|
-| Documentos principales | 4 |
-| Páginas totales | 150+ |
-| Palabras | 40,000+ |
-| Ejemplos de código | 50+ |
-| Diagramas | 15+ |
-| Imágenes | Múltiples |
+| Documentos principales | 6 |
+| Documentos especializados | 2 |
+| Páginas totales | 230+ |
+| Palabras | 60,000+ |
+| Ejemplos de código | 60+ |
+| Diagramas | 20+ |
+| Tablas de referencia | 15+ |
 
 ---
 
@@ -47,8 +48,15 @@ docs/
 ├── 👨‍💼 ADMINISTRACIÓN
 │   └── GUIA_ADMINISTRADOR.md (95 páginas)
 │
-└── 👥 USUARIOS
-    └── GUIA_USUARIO_FINAL.md (120 páginas)
+├── 👥 USUARIOS
+│   └── GUIA_USUARIO_FINAL.md (120 páginas)
+│
+├── 🔑 ROLES Y SEGURIDAD
+│   ├── ROLES_Y_PERMISOS.md (Nuevo - 50+ páginas)
+│   └── firestore.rules (Referencia)
+│
+└── 📅 FEATURES ESPECÍFICAS
+    └── SCHEDULES_Y_DISPONIBILIDAD.md (Nuevo - 40+ páginas)
 ```
 
 ---
@@ -335,11 +343,16 @@ Antes de Salir: Confirmar backup
 | **Instalación local** | Setup & Deployment | Instalación Local |
 | **Despliegue a producción** | Setup & Deployment | Despliegue en Producción |
 | **Variables de entorno** | Setup & Deployment | Variables de Entorno |
+| **Roles y permisos** | Roles y Permisos | Sistema de RBAC |
+| **4 tipos de usuarios** | Roles y Permisos | Roles Disponibles |
+| **Sistema de schedules** | Schedules y Disponibilidad | Descripción General |
+| **Configurar disponibilidad** | Schedules y Disponibilidad | Flujo de Uso |
 | **Gestión de usuarios** | Guía Administrador | Gestión de Usuarios |
 | **Moderar contenido** | Guía Administrador | Gestión de Contenido |
 | **Crear mi perfil** | Guía Usuario | Para Programadores |
 | **Buscar programador** | Guía Usuario | Para Usuarios Estándar |
 | **Hacer solicitud** | Guía Usuario | Sistema de Solicitudes |
+| **Firestore Rules** | Roles y Permisos | Implementación Técnica |
 | **Cambiar mi contraseña** | Guía Usuario | Perfil y Configuración |
 | **Recuperar contraseña** | Guía Usuario | Registro e Inicio de Sesión |
 | **Troubleshooting** | Setup & Deployment | Troubleshooting |
