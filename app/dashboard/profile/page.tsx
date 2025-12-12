@@ -16,8 +16,8 @@ export default function Profile() {
           <p className="text-accent/80 mt-2">Actualiza tu información personal</p>
         </div>
         <div className="flex flex-col md:flex-row gap-8 items-start">
-          <div className="flex-shrink-0">
-            <div className="bg-gradient-to-br from-alt via-primary to-secondary relative w-64 h-64 overflow-hidden rounded-2xl border border-accent/20 shadow-lg">
+          <div className="shrink-0">
+            <div className="bg-linear-to-br from-alt via-primary to-secondary relative w-64 h-64 overflow-hidden rounded-2xl border border-accent/20 shadow-lg">
               <Image
                 src={userData?.photoURL || "/profile.svg"}
                 alt="User Profile"

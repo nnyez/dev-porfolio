@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { ErrorSpan } from "./ErrorSpan";
 
 const userProfileSchema = z.object({
   displayName: z.string().min(1, "Display Name is required"),

@@ -1,6 +1,6 @@
 "use client";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { deleteProject, getAllProjects } from "@/app/lib/firebaseRepository";
+import { getAllProjects } from "@/app/lib/firebaseRepository";
 import { Project } from "@/app/lib/types";
 import { useEffect, useState } from "react";
 import { CellProject } from "./ui/CellProject";
@@ -35,10 +35,12 @@ export default function Projects() {
 
   return (
     <main className="bg-primary flex min-h-screen flex-col font-sans">
-      <div className="border-b border-accent/20 flex items-center justify-between px-8 py-8">
+      <div className="border-accent/20 flex items-center justify-between border-b px-8 py-8">
         <div>
-          <h2 className="text-4xl font-bold text-foreground">Proyectos</h2>
-          <p className="text-accent/80 mt-1">Gestiona y visualiza tus proyectos</p>
+          <h2 className="text-foreground text-4xl font-bold">Proyectos</h2>
+          <p className="text-accent/80 mt-1">
+            Gestiona y visualiza tus proyectos
+          </p>
         </div>
         <button
           onClick={openCreate}
@@ -50,17 +52,17 @@ export default function Projects() {
       </div>
       <div className="flex-1 px-8 py-10">
         {projects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-96 text-center">
+          <div className="flex h-96 flex-col items-center justify-center text-center">
             <p className="text-accent/60 text-xl">Aún no tienes proyectos</p>
             <button
               onClick={openCreate}
-              className="mt-6 bg-accent text-secondary hover:bg-resalt px-6 py-2 rounded-full font-semibold transition-all duration-300"
+              className="bg-accent text-secondary hover:bg-resalt mt-6 rounded-full px-6 py-2 font-semibold transition-all duration-300"
             >
               Crear tu primer proyecto
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {projects.map((project: Project) => (
               <CellProject
                 key={project.id}

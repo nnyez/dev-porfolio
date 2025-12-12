@@ -7,6 +7,10 @@ import { GridCard } from "../ui/shared/GridCard";
 import { Project, UserProgrammer } from "../lib/types";
 import { CellUser } from "./ui/CellUser";
 
+// Metadata para la página de proyectos
+// NOTA: En componentes "use client", la metadata se define en layout
+// Para páginas dinámicas, usa layout.tsx en el mismo directorio
+
 export default function Projects() {
   const [programmers, setProgrammers] = useState<UserProgrammer[]>();
   const [programer, setProgramer] = useState<UserProgrammer | null>(null);

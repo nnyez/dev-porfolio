@@ -122,7 +122,7 @@ export default function Login() {
             {isSubmitting ? "Entrando..." : "Entrar"}
           </button>
 
-          <ButtonGoogle />
+          <ButtonGoogle isRegister={false} />
 
           {/* Link para ir a Registro */}
           <div className="mt-2 text-center text-sm">

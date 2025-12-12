@@ -1,7 +1,7 @@
 import { auth, db, googleProvider } from "@/firebase.config";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { AppUser, UserBase } from "./types";
+import { AppUser } from "./types";
 
 interface FirebaseError {
   code: string;
@@ -21,11 +21,10 @@ export async function registerEmailUser(
       password,
     );
 
-    const user = userCredential.user;
-
-    await setDoc(doc(db, "users", user.uid), {
-      uid: user.uid,
-      email: user.email,
+    // Se crea el usuario en Firebase Auth automáticamente
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      uid: userCredential.user.uid,
+      email: userCredential.user.email,
       displayName: userData.nombre,
       role: "standard",
     } as AppUser);
@@ -33,11 +32,7 @@ export async function registerEmailUser(
     return userCredential;
   } catch (error) {
     const firebaseError = error as FirebaseError;
-
     const errorCode = firebaseError.code;
-    const errorMessage = firebaseError.message;
-    // console.log("Firebase Error Code:", errorCode);
-    // console.log("Firebase Error Message:", errorMessage);
     throw new Error(errorCode);
   }
 }
@@ -51,16 +46,11 @@ export async function loginEmailUser(email: string, password: string) {
       email,
       password,
     );
-    const user = userCredential.user;
 
     return userCredential.user;
   } catch (error) {
     const firebaseError = error as FirebaseError;
-
     const errorCode = firebaseError.code;
-    const errorMessage = firebaseError.message;
-    // console.log("Firebase Error Code:", errorCode);
-    // console.log("Firebase Error Message:", errorMessage);
     throw new Error(errorCode);
   }
 }

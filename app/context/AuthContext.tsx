@@ -33,9 +33,9 @@ export default function AuthProvider({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Creamos un Observable base que escucha a Firebase Auth
+    // IMPORTANTE: Usa RxJS Observables para sincronizar auth en tiempo real
+    // onAuthStateChanged escucha cambios en Firebase Authentication
     const authState$ = new Observable<User | null>((observer) => {
-      // onAuthStateChanged devuelve la función unsubscribe, perfecto para el return del Observable
       return onAuthStateChanged(
         auth,
         (u) => observer.next(u),
@@ -43,20 +43,18 @@ export default function AuthProvider({
       );
     });
 
-    // 2. Construimos el pipeline
+    // switchMap: Si usuario cambia, cancela suscripción anterior y carga nuevos datos
+    // Esto previene fugas de memoria y datos de usuarios anteriores
     const subscription = authState$
       .pipe(
-        // switchMap: Si llega un nuevo usuario, cancela la suscripción anterior de Firestore
         switchMap((currentUser) => {
           if (!currentUser) {
-            // Si no hay usuario, emitimos null para ambos valores
             return of({ user: null, userData: null });
           }
 
-          // Si hay usuario, creamos un Observable de Firestore (Tiempo real)
+          // Obtiene perfil del usuario desde Firestore en tiempo real
           const userDoc$ = getUserData(currentUser.uid);
 
-          // Combinamos el usuario de Auth con la data de Firestore
           return userDoc$.pipe(
             map((data) => ({ user: currentUser, userData: data })),
           );
@@ -64,7 +62,7 @@ export default function AuthProvider({
       )
       .subscribe({
         next: (result) => {
-          // Actualizamos todos los estados de React de una vez
+          // Actualiza estados de React de una vez (más eficiente)
           setUser(result.user);
           setUserData(result.userData);
           setLoading(false);
@@ -77,7 +75,7 @@ export default function AuthProvider({
         },
       });
 
-    // Limpieza al desmontar el componente
+    // Limpia suscripciones al desmontar para evitar memory leaks
     return () => subscription.unsubscribe();
   }, []);
 

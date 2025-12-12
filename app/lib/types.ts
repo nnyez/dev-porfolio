@@ -1,21 +1,16 @@
 /**
- * ARCHIVO: types.ts
- * * Estructura de datos optimizada para Firestore y Next.js.
- * NOTA: Las fechas se manejan como 'number' (timestamps) para evitar 
- * errores de "Non-serializable data" en componentes de cliente de Next.js.
+ * TIPOS Y INTERFACES PARA FIRESTORE
+ * Las fechas se usan como 'number' (timestamps) para evitar
+ * errores de "Non-serializable data" en componentes Next.js
  */
 
-// ==========================================
-// 1. ENUMS Y TIPOS AUXILIARES
-// ==========================================
-
+// Tipos de usuario en el sistema
 export type UserRole = 'standard' | 'programmer' | 'admin';
 
+// Estados posibles de una solicitud
 export type ApplicationStatus = 'pending' | 'reviewed' | 'accepted' | 'rejected' | 'completed';
 
-// ==========================================
-// 2. USUARIOS (Discriminated Unions)
-// ==========================================
+// ===== USUARIOS (Discriminated Unions) =====
 
 // Base común para todos los usuarios
 export interface UserBase {
@@ -24,7 +19,6 @@ export interface UserBase {
   displayName: string;
   photoURL?: string;
   phoneNumber?: string;
-  
   role: UserRole;
 }
 
@@ -34,7 +28,7 @@ export interface UserStandard extends UserBase {
   companyName?: string;
 }
 
-// Programador (quien ofrece servicios)
+// Programador (ofrece servicios de desarrollo)
 export interface UserProgrammer extends UserBase {
   role: 'programmer';
   title: string; // Ej: "Senior Fullstack Dev"
@@ -54,77 +48,67 @@ export interface UserAdmin extends UserBase {
 export type AppUser = UserStandard | UserProgrammer | UserAdmin;
 
 
-// ==========================================
-// 3. PROYECTOS (Subcolección)
-// ==========================================
-// Ruta en Firestore: users/{programmerUid}/projects/{projectId}
+// ===== PROYECTOS =====
 
 export interface Project {
   id: string;
-  ownerUid: string; // ID del programador
+  ownerUid: string; // ID del programador propietario
   name: string;
   description: string;
   projectUrl?: string;
   imageUrl?: string;
   technologiesUsed?: string[];
-  
 }
 
 
-// ==========================================
-// 4. DISPONIBILIDAD (Configuración)
-// ==========================================
-// Ruta sugerida: users/{programmerUid}/settings/availability
+// ===== DISPONIBILIDAD (Configuración) =====
 
 export interface TimeSlotConfig {
   start: string; // Formato "HH:mm" ej: "09:00"
-  end: string;   // Formato "HH:mm" ej: "12:00"
+  end: string;   // Formato "HH:mm" ej: "18:00"
 }
 
 export interface DayAvailability {
-  day: string;
-  slots: TimeSlotConfig;
+  day: string;        // Lunes, Martes, etc
+  slots: TimeSlotConfig[];
 }
 
 export interface UserAvailabilityConfig {
   uid: string;
-  // timezone: string; // Ej: "America/Guayaquil"
   weeklySchedule: DayAvailability[];
 }
 
 
-// ==========================================
-// 5. SOLICITUDES Y CITAS (Transacciones)
-// ==========================================
-// Ruta sugerida: coleccion raiz "applications" o "appointments"
+// ===== SOLICITUDES Y CITAS =====
 
 export interface ServiceApplication {
   id: string;
   
   // Relación
-  clientUid: string;      // Quien pide
-  programmerUid: string;  // Quien recibe
+  clientUid: string;       // Quien pide
+  clientName: string;      // Nombre del cliente
+  programmerUid: string;   // Quien recibe
+  programmerName?: string; // Nombre del programador
   
   // Estado
   status: ApplicationStatus;
   
   // Detalles de la solicitud
-  subject: string;        // Título breve
-  description: string;    // Detalle de lo que necesita
-  budget?: string;        // Opcional
+  subject: string;         // Título breve
+  description: string;     // Detalle de lo que necesita
+  budget?: string;         // Opcional
   
   // Agendamiento propuesto
-  scheduledDate: number;  // Timestamp de la fecha
+  scheduledDate: number;   // Timestamp de la fecha
   durationMinutes: number; // Ej: 60
-  startTime: number;      // Timestamp exacto de inicio
-  endTime: number;        // Timestamp exacto de fin
+  startTime: number;       // Timestamp exacto de inicio
+  endTime: number;         // Timestamp exacto de fin
   
   // Metadatos
-  
-  
+  createdAt: number;       // Timestamp de creación
+  updatedAt: number;       // Timestamp de última actualización
   
   // Respuesta (si aplica)
-  meetingLink?: string;   // Google Meet / Zoom
+  meetingLink?: string;    // Google Meet / Zoom
   rejectionReason?: string;
-
 }

@@ -15,7 +15,6 @@ export default function Profile({
 
   const [userD, setUserD] = useState<AppUser | null>(null);
   const { userData } = useAuth();
-  const user = userData as AppUser;
 
   useEffect(() => {
     const data = getUserData(id);

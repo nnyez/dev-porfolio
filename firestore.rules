@@ -2,6 +2,135 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    
+    // ==================== FUNCIONES AUXILIARES ====================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+    
+    function isProgrammer() {
+      return isAuthenticated() && getUserRole() == 'programmer';
+    }
+    
+    function isStandard() {
+      return isAuthenticated() && getUserRole() == 'standard';
+    }
+    
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+    
+    // ==================== COLECCIÓN: USERS ====================
+    match /users/{userId} {
+      // LECTURA: Autenticados pueden leer perfiles públicos
+      allow read: if isAuthenticated();
+      
+      // CREAR: Solo propietario durante registro
+      allow create: if isAuthenticated() && isOwner(userId);
+      
+      // ACTUALIZAR: Propietario o admin
+      allow update: if isAdmin() || isOwner(userId);
+      
+      // ELIMINAR: Solo admin
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== COLECCIÓN: PROJECTS ====================
+    match /projects/{projectId} {
+      // LECTURA: Todos autenticados (ownerUid es el uid del programador)
+      allow read: if isAuthenticated();
+      
+      // CREAR: Solo programadores crean sus propios proyectos
+      allow create: if isProgrammer() && 
+                       request.resource.data.ownerUid == request.auth.uid;
+      
+      // ACTUALIZAR: El propietario (ownerUid) o admin
+      allow update: if isAdmin() || 
+                       isOwner(resource.data.ownerUid);
+      
+      // ELIMINAR: El propietario o admin
+      allow delete: if isAdmin() || 
+                       isOwner(resource.data.ownerUid);
+    }
+    
+    // ==================== COLECCIÓN: APPLICATIONS ====================
+    match /applications/{applicationId} {
+      // LECTURA: 
+      // - clientUid lee su propia aplicación
+      // - programmerUid ve aplicaciones que le hicieron
+      // - admin ve todo
+      allow read: if isAdmin() || 
+                     (isStandard() && resource.data.clientUid == request.auth.uid) ||
+                     (isProgrammer() && resource.data.programmerUid == request.auth.uid);
+      
+      // CREAR: Solo clientes (standard) crean aplicaciones
+      allow create: if isStandard() && 
+                       request.resource.data.clientUid == request.auth.uid;
+      
+      // ACTUALIZAR: 
+      // - Cliente puede editar su aplicación si está pending
+      // - Programador puede cambiar estado
+      // - Admin puede hacer cualquier cosa
+      allow update: if isAdmin() ||
+                       (isStandard() && resource.data.clientUid == request.auth.uid) ||
+                       (isProgrammer() && resource.data.programmerUid == request.auth.uid);
+      
+      // ELIMINAR: Cliente o admin
+      allow delete: if isAdmin() || 
+                       (isStandard() && resource.data.clientUid == request.auth.uid);
+    }
+    
+    // ==================== COLECCIÓN: MESSAGES ====================
+    match /messages/{messageId} {
+      // LECTURA: Participantes o admin
+      allow read: if isAdmin() || request.auth.uid in resource.data.participants;
+      
+      // CREAR: Usuario autenticado
+      allow create: if isAuthenticated() && 
+                       request.resource.data.senderId == request.auth.uid;
+      
+      // ACTUALIZAR: Solo el remitente
+      allow update: if resource.data.senderId == request.auth.uid;
+      
+      // ELIMINAR: Remitente o admin
+      allow delete: if isAdmin() || resource.data.senderId == request.auth.uid;
+    }
+    
+    // ==================== COLECCIÓN: NOTIFICATIONS ====================
+    match /notifications/{notificationId} {
+      // LECTURA: Destinatario o admin
+      allow read: if resource.data.userId == request.auth.uid || isAdmin();
+      
+      // CREAR: Cualquier autenticado
+      allow create: if isAuthenticated();
+      
+      // ACTUALIZAR: Destinatario o admin
+      allow update: if resource.data.userId == request.auth.uid || isAdmin();
+      
+      // ELIMINAR: Destinatario o admin
+      allow delete: if resource.data.userId == request.auth.uid || isAdmin();
+    }
+    
+    // ==================== COLECCIÓN: SCHEDULES ====================
+    match /schedules/{userId} {
+      // LECTURA: El propietario o admin
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // CREAR/ACTUALIZAR: El propietario o admin
+      allow write: if isOwner(userId) || isAdmin();
+    }
+    
+    // ==================== POLÍTICA POR DEFECTO ====================
+    // Negar todo lo demás
     match /{document=**} {
       allow read, write: if false;
     }

@@ -1,6 +1,7 @@
 import RoleGuard from "../auth/guards/RoleWard";
 import NavbarDashboard from "./ui/NavbarDashboard";
 
+
 export default function Dashboard({
   children,
 }: Readonly<{

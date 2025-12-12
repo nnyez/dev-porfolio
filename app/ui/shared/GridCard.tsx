@@ -1,18 +1,15 @@
 "use client";
 import Image from "next/image";
-import { ReactNode, useState } from "react";
-import { LabelChip } from "./LabelChip";
-import Link from "next/link";
+import { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 export function GridCard({
   children,
-  className,
   src,
   chips,
-  classNameImg,
   srcRepo,
   displayName,
+  className
 }: {
   children?: ReactNode;
   className?: string;
@@ -25,7 +22,7 @@ export function GridCard({
   const router = useRouter();
   
   return (
-    <div className="group bg-secondary border border-accent/20 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-accent/40 flex flex-col h-full">
+    <div className={`group bg-secondary border border-accent/20 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-accent/40 flex flex-col h-full ${className || ""}`}>
       {/* Imagen */}
       <div className="relative h-56 overflow-hidden bg-primary/50">
         <Image
@@ -39,7 +36,7 @@ export function GridCard({
         />
         
         {/* Overlay con información */}
-        <div className="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+        <div className="absolute inset-0 bg-linear-to-t from-secondary via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
           {/* Desarrollador */}
           {displayName && (
             <div className="text-right">
