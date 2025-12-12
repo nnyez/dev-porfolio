@@ -5,6 +5,7 @@ import { AppUser } from "@/app/lib/types";
 import FormProfile from "../ui/FormProfile";
 import { use, useEffect, useState } from "react";
 import { getUserData } from "@/app/lib/firebaseRepository";
+import AvailabilityScheduler from "../../standard-applications/ui/AvailabilityScheduler";
 
 export default function Profile({
   params,
@@ -25,19 +26,22 @@ export default function Profile({
     return () => subscription.unsubscribe();
   }, [id]);
   return (
-    <section className="bg-secondary m-10 mt-10 flex w-3/4 flex-col items-center justify-center p-10">
+    <section className="bg-secondary m-10 mt-10   grid grid-cols-2 items-center justify-center p-10 ">
       {userD ? (
         <>
-          <h1 className="mb-6 text-4xl font-bold">User Profile</h1>
-          <div className="bg-alt relative mb-6 aspect-square w-72 overflow-hidden rounded-full">
-            <Image
-              src={userD?.photoURL || "/profile.svg"}
-              alt="User Profile"
-              fill
-              className="object-cover"
-            />
+          <div>
+            <h1 className="mb-6 text-4xl font-bold">User Profile</h1>
+            <div className="bg-alt relative mb-6 aspect-square w-72 overflow-hidden rounded-full">
+              <Image
+                src={userD?.photoURL || "/profile.svg"}
+                alt="User Profile"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <FormProfile userData={userD} canEdit={userData?.uid === id} />
           </div>
-          <FormProfile userData={userD} canEdit={userData?.uid === id} />
+          <AvailabilityScheduler onlyView={userData?.uid !== id} />
         </>
       ) : (
         <p>Loading...</p>

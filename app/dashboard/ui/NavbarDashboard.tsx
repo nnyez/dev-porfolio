@@ -15,7 +15,7 @@ export default function NavbarDashboard() {
       {userData?.role === "admin" || userData?.role === "programmer" || userData?.role === "standard" ? (
         <NavlinkDashboard href="/dashboard/profile" text="Perfil" />
       ) : null}
-      {userData?.role === "admin" || userData?.role === "standard" ? (
+      {userData?.role === "admin" || userData?.role === "standard"  || userData?.role === "programmer" ? (
         <NavlinkDashboard
           href="/dashboard/standard-applications"
           text="Solicitudes"

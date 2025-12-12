@@ -70,7 +70,7 @@ export interface TimeSlotConfig {
 
 export interface DayAvailability {
   day: string;        // Lunes, Martes, etc
-  slots: TimeSlotConfig[];
+  slots: TimeSlotConfig;
 }
 
 export interface UserAvailabilityConfig {

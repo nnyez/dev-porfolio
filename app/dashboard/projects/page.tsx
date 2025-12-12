@@ -2,12 +2,16 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { getAllProjects } from "@/app/lib/firebaseRepository";
 import { Project } from "@/app/lib/types";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { CellProject } from "./ui/CellProject";
 import ModalProject from "./ui/ModalProject";
+import { useAuth } from "@/app/context/AuthContext";
+import { where } from "firebase/firestore";
 
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
+
+  const { userData } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState<Project | undefined>(undefined);
@@ -26,12 +30,22 @@ export default function Projects() {
   };
 
   useEffect(() => {
-    const subscription = getAllProjects().subscribe({
-      next: (data) => setProjects(data),
-      error: (err) => console.error("Error fetching projects:", err),
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+    if (!userData) return;
+    if (userData.role === "programmer") {
+      const q = where("ownerUid", "==", userData.uid);
+      const subscription = getAllProjects(q).subscribe({
+        next: (data) => setProjects(data),
+        error: (err) => console.error("Error fetching projects:", err),
+      });
+      return () => subscription.unsubscribe();
+    } else if (userData.role === "admin") {
+      const subscription = getAllProjects().subscribe({
+        next: (data) => setProjects(data),
+        error: (err) => console.error("Error fetching projects:", err),
+      });
+      return () => subscription.unsubscribe();
+    }
+  }, [userData]);
 
   return (
     <main className="bg-primary flex min-h-screen flex-col font-sans">

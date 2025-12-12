@@ -38,26 +38,34 @@ const getRobotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",
 });
 export const metadata: Metadata = {
-  title: "Tu Empresa - Descripción clara y con palabras clave",
-  description: "Descripción concisa del contenido, máximo 160 caracteres para SEO",
-  keywords: ["palabra1", "palabra2", "palabra3"],
-  authors: [{ name: "Tu nombre" }],
+  title: "nnyez - El portafolio de los desarrolladores",
+  description: "Plataforma que recopila portafolios de programadores y facilita asesorías con clientes.",
+  keywords: ["portafolio", "desarrolladores", "proyectos", "asesoría", "programación"],
+  authors: [{ name: "nnyez" }],
   openGraph: {
-    title: "Tu Empresa",
-    description: "Descripción para redes sociales",
-    url: "https://tudominio.com",
-    siteName: "Tu Empresa",
+    title: "nnyez - Encuentra a tu desarrollador ideal",
+    description: "Explora los mejores portafolios y conecta con talento tech.",
+    url: "", // <--- Pon aquí tu URL real de GitHub Pages cuando la tengas
+    siteName: "nnyez",
+    images: [
+      {
+        url: "/og-image.png", // Puedes crear una imagen de 1200x630px en /public para cuando compartan tu link
+        width: 1200,
+        height: 630,
+      },
+    ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tu Empresa",
-    description: "Descripción para Twitter",
+    title: "nnyez - El portafolio de los desarrolladores", // <--- Corregido
+    description: "Encuentra y conecta con los mejores programadores.", // <--- Corregido
+    // images: ["/twitter-image.png"], // Opcional
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  // Si usas la Opción 1 (automática), borra este bloque de icons:
+  /* icons: {
+    icon: "/icon.png",
+  }, */
 };
 
 export default function RootLayout({

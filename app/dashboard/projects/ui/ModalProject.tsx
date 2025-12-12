@@ -165,7 +165,7 @@ export default function ModalProject({
             onClick={onClose}
             className="text-accent hover:text-resalt transition-colors text-3xl font-bold"
           >
-            ✕
+            
           </button>
         </div>
 

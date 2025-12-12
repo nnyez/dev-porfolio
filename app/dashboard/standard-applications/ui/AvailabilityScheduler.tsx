@@ -53,7 +53,11 @@ const formSchema = z.object({
 // Tipo inferido del formulario
 type ScheduleFormData = z.infer<typeof formSchema>;
 
-export default function AvailabilityScheduler() {
+export default function AvailabilityScheduler({
+  onlyView = false,
+}: {
+  onlyView?: boolean;
+}) {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const { user } = useAuth();
@@ -115,20 +119,20 @@ export default function AvailabilityScheduler() {
   };
 
   return (
-    <section className="w-full bg-secondary border border-accent/20 rounded-2xl shadow-lg overflow-hidden">
-      <div className="p-6 border-b border-accent/20 bg-primary/50">
+    <section className="bg-secondary border-accent/20 w-full overflow-hidden rounded-2xl border shadow-lg">
+      <div className="border-accent/20 bg-primary/50 border-b p-6">
         <div>
-          <h1 className="flex items-center gap-3 text-2xl font-bold text-foreground">
+          <h1 className="text-foreground flex items-center gap-3 text-2xl font-bold">
             <AccessTimeIcon className="text-accent text-2xl!" />
             Calendario de Disponibilidad
           </h1>
-          <p className="mt-2 text-accent/80">
+          <p className="text-accent/80 mt-2">
             Configura tus franjas horarias semanales.
           </p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-6">
         {fields.map((field, index) => {
           const isEnabled = scheduleValues?.[index]?.enabled;
           const label =
@@ -157,10 +161,10 @@ export default function AvailabilityScheduler() {
                       className="peer sr-only"
                       {...register(`schedule.${index}.enabled`)}
                     />
-                    <div className="peer h-6 w-11 rounded-full bg-accent/30 peer-checked:bg-accent peer-focus:ring-4 peer-focus:ring-accent/30 peer-focus:outline-none after:absolute after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-accent/40 after:bg-primary after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-accent peer-checked:after:bg-secondary"></div>
+                    <div className="peer bg-accent/30 peer-checked:bg-accent peer-focus:ring-accent/30 after:border-accent/40 after:bg-primary peer-checked:after:border-accent peer-checked:after:bg-secondary h-6 w-11 rounded-full peer-focus:ring-4 peer-focus:outline-none after:absolute after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:transition-all after:content-[''] peer-checked:after:translate-x-full"></div>
                   </label>
                   <span
-                    className={`font-semibold capitalize pr-5 ${
+                    className={`pr-5 font-semibold capitalize ${
                       isEnabled ? "text-foreground" : "text-accent/40"
                     }`}
                   >
@@ -173,12 +177,12 @@ export default function AvailabilityScheduler() {
                 {isEnabled ? (
                   <div className="flex flex-1 flex-wrap items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-accent uppercase">
+                      <span className="text-accent text-xs font-semibold uppercase">
                         Desde
                       </span>
                       <input
                         type="time"
-                        className={`rounded-lg border bg-primary px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent/30 focus:outline-none transition-all ${
+                        className={`bg-primary text-foreground focus:ring-accent/30 rounded-lg border px-3 py-2 text-sm transition-all focus:ring-2 focus:outline-none ${
                           itemErrors?.slots?.start
                             ? "border-red-500/60"
                             : "border-accent/30"
@@ -187,15 +191,15 @@ export default function AvailabilityScheduler() {
                       />
                     </div>
 
-                    <span className="hidden text-accent/30 sm:block">|</span>
+                    <span className="text-accent/30 hidden sm:block">|</span>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-accent uppercase">
+                      <span className="text-accent text-xs font-semibold uppercase">
                         Hasta
                       </span>
                       <input
                         type="time"
-                        className={`rounded-lg border bg-primary px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-accent/30 focus:outline-none transition-all ${
+                        className={`bg-primary text-foreground focus:ring-accent/30 rounded-lg border px-3 py-2 text-sm transition-all focus:ring-2 focus:outline-none ${
                           itemErrors?.slots?.end
                             ? "border-red-500/60"
                             : "border-accent/30"
@@ -205,7 +209,7 @@ export default function AvailabilityScheduler() {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex-1 text-sm text-accent/40 italic">
+                  <div className="text-accent/40 flex-1 text-sm italic">
                     No disponible
                   </div>
                 )}
@@ -222,33 +226,35 @@ export default function AvailabilityScheduler() {
           );
         })}
 
-        <div className="flex justify-end border-t border-accent/20 pt-6 mt-8">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`flex items-center gap-2 rounded-lg px-6 py-3 font-semibold text-secondary transition-all ${
-              isSubmitting
-                ? "cursor-not-allowed bg-accent/60"
-                : saveSuccess
-                  ? "bg-green-600/80 hover:bg-green-700"
-                  : "bg-accent shadow-lg hover:bg-resalt"
-            }`}
-          >
-            {isSubmitting ? (
-              "Guardando..."
-            ) : saveSuccess ? (
-              <>
-                <CheckCircleIcon className="h-5 w-5" />
-                ¡Guardado!
-              </>
-            ) : (
-              <>
-                <SaveIcon className="h-5 w-5" />
-                Guardar Cambios
-              </>
-            )}
-          </button>
-        </div>
+        {!onlyView ? (
+          <div className="border-accent/20 mt-8 flex justify-end border-t pt-6">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`text-secondary flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-all ${
+                isSubmitting
+                  ? "bg-accent/60 cursor-not-allowed"
+                  : saveSuccess
+                    ? "bg-green-600/80 hover:bg-green-700"
+                    : "bg-accent hover:bg-resalt shadow-lg"
+              }`}
+            >
+              {isSubmitting ? (
+                "Guardando..."
+              ) : saveSuccess ? (
+                <>
+                  <CheckCircleIcon className="h-5 w-5" />
+                  ¡Guardado!
+                </>
+              ) : (
+                <>
+                  <SaveIcon className="h-5 w-5" />
+                  Guardar Cambios
+                </>
+              )}
+            </button>
+          </div>
+        ) : null}
       </form>
     </section>
   );

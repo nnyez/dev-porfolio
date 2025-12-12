@@ -31,8 +31,8 @@ service cloud.firestore {
     
     // ==================== COLECCIÓN: USERS ====================
     match /users/{userId} {
-      // LECTURA: Autenticados pueden leer perfiles públicos
-      allow read: if isAuthenticated();
+      // LECTURA: Cualquiera puede ver perfiles públicos de desarrolladores
+      allow read: if true;
       
       // CREAR: Solo propietario durante registro
       allow create: if isAuthenticated() && isOwner(userId);
@@ -46,11 +46,11 @@ service cloud.firestore {
     
     // ==================== COLECCIÓN: PROJECTS ====================
     match /projects/{projectId} {
-      // LECTURA: Todos autenticados (ownerUid es el uid del programador)
-      allow read: if isAuthenticated();
+      // LECTURA: Cualquiera puede ver los proyectos de los desarrolladores
+      allow read: if true;
       
-      // CREAR: Solo programadores crean sus propios proyectos
-      allow create: if isProgrammer() && 
+      // CREAR: Programadores y admin crean proyectos
+      allow create: if (isProgrammer() || isAdmin()) && 
                        request.resource.data.ownerUid == request.auth.uid;
       
       // ACTUALIZAR: El propietario (ownerUid) o admin
@@ -64,22 +64,18 @@ service cloud.firestore {
     
     // ==================== COLECCIÓN: APPLICATIONS ====================
     match /applications/{applicationId} {
-      // LECTURA: 
-      // - clientUid lee su propia aplicación
-      // - programmerUid ve aplicaciones que le hicieron
-      // - admin ve todo
+      // LECTURA: Permite a usuario estándar leer sus solicitudes (crear + leer con query)
+      // Permite a programador leer solicitudes que le hicieron
+      // Admin ve todo
       allow read: if isAdmin() || 
                      (isStandard() && resource.data.clientUid == request.auth.uid) ||
                      (isProgrammer() && resource.data.programmerUid == request.auth.uid);
       
-      // CREAR: Solo clientes (standard) crean aplicaciones
-      allow create: if isStandard() && 
+      // CREAR: Clientes (standard) y admin crean aplicaciones
+      allow create: if (isStandard() || isAdmin()) && 
                        request.resource.data.clientUid == request.auth.uid;
       
-      // ACTUALIZAR: 
-      // - Cliente puede editar su aplicación si está pending
-      // - Programador puede cambiar estado
-      // - Admin puede hacer cualquier cosa
+      // ACTUALIZAR: Cliente, programador o admin
       allow update: if isAdmin() ||
                        (isStandard() && resource.data.clientUid == request.auth.uid) ||
                        (isProgrammer() && resource.data.programmerUid == request.auth.uid);

@@ -3,6 +3,8 @@ const nextConfig = {
   // ... otras configuraciones si las tienes
 
   images: {
+    
+    unoptimized: true,
     // Aquí es donde defines los patrones de dominio permitidos
     remotePatterns: [
       {
@@ -21,6 +23,7 @@ const nextConfig = {
     ],
   },
 
+  
 };
 
 module.exports = nextConfig;
