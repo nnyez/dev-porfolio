@@ -6,16 +6,15 @@
 [![Vercel](https://img.shields.io/badge/Vercel-Hosting-000000?style=flat-square&logo=vercel)](https://vercel.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-06b6d4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
-[![Documentación](https://img.shields.io/badge/Documentación-500%2B%20páginas-brightgreen?style=flat-square&logo=readme)](docs/COMIENZA_AQUI.md)
 [![Status](https://img.shields.io/badge/Status-✅%20Producción-success?style=flat-square)]()
 
 ## 📋 Descripción
 
-**Portfolio Dev** es una plataforma web moderna que actúa como intermediaria entre programadores profesionales y usuarios que requieren asesorías técnicas especializadas.
+**Portfolio Dev** es una plataforma que conecta programadores profesionales con usuarios que requieren asesorías técnicas especializadas.
 
 ### 🎯 Propósito
 
-- 👨‍💻 **Programadores:** Exponer su portafolio y ofrecer servicios de consultoría
+- 👨‍💻 **Programadores:** Exponer portafolio y ofrecer servicios
 - 👤 **Usuarios:** Descubrir programadores y solicitar asesorías
 - 🔐 **Administradores:** Gestionar la plataforma
 
@@ -24,23 +23,197 @@
 ## 🚀 Inicio Rápido
 
 ```bash
-# 1. Clonar repositorio
+# 1. Clonar y instalar
 git clone <URL>
 cd proyect-app
-
-# 2. Instalar dependencias
 pnpm install
 
-# 3. Configurar Firebase
+# 2. Configurar Firebase
 # Actualiza firebase.config.ts con tus credenciales
 
-# 4. Iniciar en desarrollo
+# 3. Iniciar desarrollo
 pnpm dev
 
 # Abre http://localhost:3000
 ```
 
-📖 **¿Necesitas más detalles?** → [docs/SETUP_Y_DEPLOYMENT.md](docs/SETUP_Y_DEPLOYMENT.md)
+📖 **Documentación detallada:** [docs/SETUP_Y_DEPLOYMENT.md](docs/SETUP_Y_DEPLOYMENT.md)
+
+---
+
+## ✨ Funcionalidades Principales
+
+### 🔐 Autenticación
+- ✅ Google Sign-In
+- ✅ Email/Contraseña
+- ✅ Sistema de roles (3 tipos)
+
+### 👥 Gestión de Perfiles
+- ✅ Perfil usuario estándar (clientes)
+- ✅ Perfil programador (proveedores)
+- ✅ Panel de administrador
+
+### 🎯 Portafolio
+- ✅ Crear/Editar/Eliminar proyectos
+- ✅ Visualización pública de portfolios
+- ✅ Búsqueda de programadores
+
+### 📅 Disponibilidad
+- ✅ Configurar horarios semanales
+- ✅ Sistema de solicitudes de asesorías
+- ✅ Estados: pending, reviewed, accepted, rejected, completed
+
+### 💬 Comunicación
+- ✅ Mensajes entre usuarios
+- ✅ Notificaciones
+- ✅ Sistema de aplicaciones
+
+---
+
+## 🏗️ Stack Tecnológico
+
+```
+Frontend:          Backend & BD:
+├─ Next.js 16     ├─ Firebase Auth
+├─ React 19       ├─ Firestore (NoSQL)
+├─ TypeScript     └─ Cloud Storage
+├─ Tailwind CSS
+└─ Material-UI
+```
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+app/
+├─ auth/              # Autenticación (login/registro)
+├─ dashboard/         # Panel privado
+│  ├─ profile/        # Perfil de usuario
+│  ├─ projects/       # Gestión de proyectos
+│  ├─ applications/   # Solicitudes
+│  └─ users/          # Admin: gestión de usuarios
+├─ developers/        # Perfil público de programadores
+├─ projects/          # Listado público
+└─ lib/              # Librerías y servicios
+```
+
+---
+
+## 🔑 Roles del Sistema
+
+| Rol | Descripción | Acceso |
+|-----|-----------|--------|
+| **admin** | Administrador de plataforma | Acceso total |
+| **programmer** | Proveedor de servicios | Dashboard + Proyectos + Horarios |
+| **standard** | Cliente regular | Dashboard + Solicitudes |
+
+---
+
+## 🚀 Despliegue
+
+### Vercel (Recomendado)
+
+#### Opción 1: Desde el Navegador (Más Fácil) ⭐
+```
+1. Ir a https://vercel.com
+2. Conectar GitHub
+3. Seleccionar repositorio
+4. Agregar variables Firebase
+5. Deploy automático
+```
+
+#### Opción 2: Desde la CLI
+```bash
+npm i -g vercel
+vercel --prod
+```
+
+📖 **Documentación completa:** [docs/SETUP_Y_DEPLOYMENT.md](docs/SETUP_Y_DEPLOYMENT.md#5-despliegue-en-producción)
+
+---
+
+## 👤 Crear Usuario Admin
+
+1. Regístrate en la app (Google o Email)
+2. Ve a Firebase Console → Firestore
+3. En `/users/{tu-uid}`, cambia `role` de `"standard"` a `"admin"`
+4. Recarga la app
+
+---
+
+## 🐛 Troubleshooting Rápido
+
+| Problema | Solución |
+|----------|----------|
+| **Firebase no inicia** | Verifica credentials en firebase.config.ts |
+| **Port 3000 en uso** | `pnpm dev -- -p 3001` |
+| **Google Sign-In no funciona** | Agrega dominio en Firebase → Authorized Domains |
+| **Build falla** | `rm -rf .next && pnpm build` |
+
+---
+
+## 📚 Documentación
+
+| Documento | Contenido |
+|-----------|-----------|
+| [SETUP_Y_DEPLOYMENT.md](docs/SETUP_Y_DEPLOYMENT.md) | Instalación y despliegue |
+| [INFORME_ACADEMICO.md](docs/INFORME_ACADEMICO.md) | Arquitectura y decisiones |
+| [GUIA_ADMINISTRADOR.md](docs/GUIA_ADMINISTRADOR.md) | Gestión de plataforma |
+| [GUIA_USUARIO_FINAL.md](docs/GUIA_USUARIO_FINAL.md) | Manual de usuario |
+| [ROLES_Y_PERMISOS.md](docs/ROLES_Y_PERMISOS.md) | Sistema de control de acceso |
+| [SCHEDULES_Y_DISPONIBILIDAD.md](docs/SCHEDULES_Y_DISPONIBILIDAD.md) | Sistema de horarios |
+
+---
+
+## 💻 Comandos Útiles
+
+```bash
+# Desarrollo
+pnpm dev              # Inicia en localhost:3000
+pnpm build           # Build para producción
+pnpm start           # Inicia servidor compilado
+
+# Calidad de código
+pnpm lint            # ESLint
+pnpm tsc --noEmit    # TypeScript check
+
+# Deploy
+vercel --prod        # Desplegar a Vercel
+```
+
+---
+
+## 📊 Estadísticas
+
+- **Documentación:** 250+ páginas
+- **Stack:** Next.js + React + Firebase
+- **Roles:** 3 tipos implementados
+- **Colecciones:** 4 en Firestore
+- **Componentes:** 30+ reutilizables
+
+---
+
+## 🎓 Recursos
+
+- 📖 [Next.js Docs](https://nextjs.org/docs)
+- 🔥 [Firebase Docs](https://firebase.google.com/docs)
+- ⚛️ [React Docs](https://react.dev)
+- 🔐 [Firestore Security](https://firebase.google.com/docs/firestore/security)
+
+---
+
+## 📝 Versión
+
+| Métrica | Valor |
+|---------|-------|
+| **Versión** | v0.1.0 |
+| **Status** | ✅ Producción |
+| **Última actualización** | 12 Diciembre 2025 |
+
+---
+
+**Happy coding! 🚀**
 
 ---
 

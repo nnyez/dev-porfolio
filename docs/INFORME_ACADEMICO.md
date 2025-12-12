@@ -411,11 +411,10 @@ service cloud.firestore {
 
 #### ✅ Roles Based Access Control (RBAC)
 
-**4 Tipos de Usuarios:**
+**3 Tipos de Usuarios:**
 1. **Admin:** Acceso total, gestión de plataforma
-2. **Programmer:** Gestiona proyectos, solicitudes
+2. **Programmer:** Gestiona proyectos, solicitudes y horarios
 3. **Standard:** Usuario regular, solicita asesorías
-4. **Moderator:** Supervisa contenido
 
 **Implementación:**
 ```typescript
@@ -690,10 +689,13 @@ export function Card({ isLoading, error, children }: CardProps) {
 4. Sistema de solicitudes
 5. Panel admin
 
+**Features Implementados:**
+- ✅ Notificaciones por email
+- ✅ Disponibilidad/Horarios
+
 **Features Futuros:**
 - Ratings y reviews
 - Sistema de pagos
-- Notificaciones por email
 - Chat en tiempo real
 
 **Lecciones Aprendidas:**

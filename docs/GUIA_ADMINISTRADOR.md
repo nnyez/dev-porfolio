@@ -177,7 +177,7 @@ Lista de Usuarios:
 ├────────────────────────────────────────────────────┤
 │ juan@email.com  │ Programmer  │ 5 días    │ ⋮
 │ maria@email.com │ Standard    │ 2 días    │ ⋮
-│ carlos@email... │ Moderator   │ 10 días   │ ⋮
+│ pedro@email... │ Admin       │ 10 días   │ ⋮
 └────────────────────────────────────────────────────┘
 ```
 
@@ -235,10 +235,9 @@ Acciones
 Rol Actual: Standard
 
 Seleccionar Nuevo Rol:
-├─ ⭕ Standard (Usuario regular)
-├─ ⭕ Programmer (Puede ofrecer servicios)
-├─ ⭕ Moderator (Revisa contenido)
-└─ ⭕ Admin (Acceso total)
+├─ ⭕ Standard (Usuario regular - solicita asesorías)
+├─ ⭕ Programmer (Ofrece servicios - crea proyectos)
+└─ ⭕ Admin (Acceso total - gestiona plataforma)
 
 Razón del cambio: [Campo de texto]
 ```
@@ -577,11 +576,11 @@ STANDARD
 ├─ Ver perfil propio
 └─ Contactar programadores
 
-MODERATOR
-├─ Revisar contenido
-├─ Aprobar/rechazar proyectos
-├─ Ver reportes
-└─ Gestionar reportes de usuarios
+ADMIN
+├─ Ver todos los usuarios
+├─ Cambiar roles de usuarios
+├─ Ver todas las solicitudes
+└─ Gestionar plataforma
 ```
 
 ---
@@ -689,7 +688,7 @@ Firestore Rules Status: ✅ Seguras
 3. Hacer click en "Rechazar"
 4. Seleccionar razón: "Contenido inapropiado"
 5. Escribir mensaje explicativo
-6. Opcionalmente: Avisar a usuario/moderador
+6. Opcionalmente: Avisar a admin de plataforma
 ```
 
 ### Problema 4: Solicitud Fraudulenta

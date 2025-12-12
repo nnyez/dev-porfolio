@@ -11,9 +11,6 @@
 3. [Configuración de Firebase](#configuración-de-firebase)
 4. [Variables de Entorno](#variables-de-entorno)
 5. [Despliegue en Producción](#despliegue-en-producción)
-6. [Monitoreo y Mantenimiento](#monitoreo-y-mantenimiento)
-7. [Troubleshooting](#troubleshooting)
-8. [Backup y Recuperación](#backup-y-recuperación)
 
 ---
 
@@ -51,6 +48,34 @@ git --version       # v2.30.0 o superior
 - ✅ Git y control de versiones
 - ✅ Conceptos de bases de datos NoSQL
 - ✅ Autenticación OAuth
+
+---
+
+## 1.4 Arquitectura del Sistema (Conceptos Clave)
+
+### Roles de Usuario (3 tipos)
+| Rol | Acceso | Uso Principal |
+|-----|--------|--------------|
+| **admin** | Acceso total | Administración de plataforma |
+| **programmer** | Dashboard + Proyectos + Schedules | Ofrecer servicios |
+| **standard** | Dashboard + Solicitudes | Solicitar asesorías |
+
+### Colecciones Firestore (4 principales)
+- `users` - Perfiles de usuarios
+- `projects` - Portafolio de programadores
+- `applications` - Solicitudes de asesoría
+- `schedules` - Disponibilidad horaria
+
+### Flujo Principal
+```
+Usuario → Registro (role: standard)
+       ↓
+       Puede solicitar asesorías
+       ↓
+Si quiere ofrecer: Cambiar a (role: programmer)
+       ↓
+Puede crear proyectos + Configurar horarios
+```
 
 ---
 
@@ -271,6 +296,114 @@ echo ".env.local" >> .gitignore
 # Variables con NEXT_PUBLIC_ son visibles en cliente (ok para Firebase)
 # Otras variables son privadas en servidor
 ```
+
+---
+
+## 4.4 Configuración de Email (Nodemailer/SMTP)
+
+**Funcionalidad:** Sistema de notificaciones por email cuando:
+- Se crea una nueva solicitud de asesoría
+- Se acepta una solicitud
+- Se rechaza una solicitud
+
+### Paso 1: Generar Contraseña de Aplicación (Gmail)
+
+1. Habilitar **2FA** en cuenta Google (https://myaccount.google.com/security)
+2. Ir a **App passwords** (https://myaccount.google.com/apppasswords)
+3. Seleccionar:
+   - App: **Mail**
+   - Device: **Windows/Mac/Linux**
+4. Copiar contraseña generada (16 caracteres)
+
+### Paso 2: Completar `.env.local`
+
+```env
+SMTP_SERVER_HOST=smtp.gmail.com
+SMTP_SERVER_PORT=587
+SMTP_SERVER_SECURE=false
+SMTP_SERVER_USERNAME=tu-email@gmail.com
+SMTP_SERVER_PASSWORD=xxxx xxxx xxxx xxxx    # La contraseña de app
+SITE_MAIL_RECIEVER=tu-email@gmail.com
+```
+
+### Paso 3: Verificar Funcionamiento
+
+- Crear solicitud de asesoría (el programador recibirá email)
+- Aceptar solicitud (el cliente recibirá email)
+- Verificar logs: `pnpm dev` debe mostrar "Message Sent: <id>"
+
+**Archivos involucrados:**
+- `app/lib/mail-service.ts` - SMTP transporter
+- `app/lib/email-actions.ts` - Funciones de notificación
+- `app/dashboard/standard-applications/ui/ServiceApplicationsManager.tsx` - Trigger
+
+---
+
+## 4.5 Arquitectura de la Capa `lib/`
+
+La carpeta `app/lib/` contiene la lógica de negocio y comunicación con Firestore. Usa **RxJS Observables** para operaciones asincrónicas en tiempo real.
+
+### Types (`lib/types.ts`)
+- **Tipos de usuario:** `UserStandard`, `UserProgrammer`, `UserAdmin`
+- **Colecciones:** `Project`, `ServiceApplication`, `UserAvailabilityConfig`
+- **Estados:** `ApplicationStatus = 'pending' | 'reviewed' | 'accepted' | 'rejected' | 'completed'`
+
+### Autenticación (`lib/firebaseAuth.ts`)
+```typescript
+// Registro con Email/Contraseña
+export async function registerEmailUser(email, password, userData)
+
+// Login con Email/Contraseña
+export async function loginEmailUser(email, password)
+
+// Login con Google OAuth
+export async function signInWithGoogle()
+```
+
+### Base de Datos (`lib/firebaseRepository.ts`) - RxJS Observables
+
+**USUARIOS:**
+```typescript
+getAllUsers(uid, filter?)           // Obtiene todos menos el actual
+getUserData(uid)                    // Datos de un usuario específico
+updateUserRole(uid, newRole)        // Cambiar rol
+updateUserData(uid, newData)        // Actualizar perfil
+deleteUser(uid)                     // Eliminar usuario
+```
+
+**PROYECTOS:**
+```typescript
+getAllProjects(filter?)             // Todos los proyectos o filtrados
+addProject(projectData)             // Crear proyecto
+updateProject(projectId, newData)   // Editar proyecto
+deleteProject(projectId)            // Eliminar proyecto
+```
+
+**SOLICITUDES (Applications):**
+```typescript
+addServiceApplication(appData)      // Crear solicitud de asesoría
+getApplicationsForProgrammer(uid)   // Solicitudes recibidas por programador
+getApplicationsFromClient(uid)      // Solicitudes creadas por cliente
+updateApplicationStatus(appId, status, extraData)  // Cambiar estado
+deleteServiceApplication(appId)     // Eliminar solicitud
+```
+
+**HORARIOS (Schedules):**
+```typescript
+addSchedule(scheduleData)           // Guardar disponibilidad semanal
+```
+
+### Notificaciones (`lib/email-actions.ts` + `lib/mail-service.ts`)
+```typescript
+notifyNewApplication(...)           // Email al programador (nueva solicitud)
+notifyApplicationAccepted(...)      // Email al cliente (solicitud aceptada)
+notifyApplicationRejected(...)      // Email al cliente (solicitud rechazada)
+```
+
+### Contexto de Autenticación (`app/context/AuthContext.tsx`)
+- Usa **RxJS switchMap** para sincronizar Firebase Auth + Firestore
+- Proporciona `user` (Firebase Auth) y `userData` (Firestore)
+- Se actualiza automáticamente en tiempo real
 
 ---
 
