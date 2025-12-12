@@ -19,6 +19,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "github.com",
       },
+      {
+        protocol: "https",
+        hostname: "dev-porfolio-theta.vercel.app",
+      },
     ],
   },
 
