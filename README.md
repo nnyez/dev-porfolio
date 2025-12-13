@@ -501,6 +501,24 @@ Este proyecto es privado. Todos los derechos reservados.
 └─────────────────────────────────────────┘
 ```
 
+---
+
+## 🎥 Video Explicativo
+
+¿Quieres entender el proyecto de forma visual? Mira nuestro **video explicativo completo**:
+
+[![Video Explicativo Portfolio Dev](https://img.youtube.com/vi/sWhmwKKP3y0/maxresdefault.jpg)](https://www.youtube.com/watch?v=sWhmwKKP3y0)
+
+**👉 [Ver Video en YouTube](https://www.youtube.com/watch?v=sWhmwKKP3y0)**
+
+En este video encontrarás:
+- 🎯 Presentación del proyecto y objetivos
+- 🚀 Demo de todas las funcionalidades
+- 🏗️ Explicación de la arquitectura
+- 💻 Stack tecnológico utilizado
+- 📚 Guía de instalación y configuración
+- 🔐 Sistema de roles y permisos
+- 👥 Flujos de usuario
 
 ---
 

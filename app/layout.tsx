@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     siteName: "nnyez",
     images: [
       {
-        url: "/port.jpeg", // Gracias al metadataBase, esto se leerá como: https://.../port.jpeg
+        url: "/port.jpeg", 
         width: 1200,
         height: 630,
         alt: "Vista previa del portafolio nnyez",

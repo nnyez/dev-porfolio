@@ -19,7 +19,8 @@
 7. [Arquitectura Técnica](#arquitectura-técnica)
 8. [Stack Tecnológico](#stack-tecnológico)
 9. [Metodología](#metodología)
-10. [Resultados y Conclusiones](#resultados-y-conclusiones)
+10. [Video Explicativo](#video-explicativo)
+11. [Resultados y Conclusiones](#resultados-y-conclusiones)
 
 ---
 
@@ -924,9 +925,104 @@ chore: Cambios de build, deps, etc.
 
 ---
 
-## 10. RESULTADOS Y CONCLUSIONES
+## 10. VIDEO EXPLICATIVO
 
-### 10.1 Métricas de Éxito
+### 10.1 Presentación Visual del Proyecto
+
+Se ha elaborado un **video explicativo completo** que documenta visualmente todos los aspectos técnicos, funcionales y arquitectónicos del proyecto Portfolio Dev.
+
+**📹 Ver Video:** [https://www.youtube.com/watch?v=sWhmwKKP3y0](https://www.youtube.com/watch?v=sWhmwKKP3y0)
+
+[![Video Explicativo Portfolio Dev](https://img.youtube.com/vi/sWhmwKKP3y0/maxresdefault.jpg)](https://www.youtube.com/watch?v=sWhmwKKP3y0)
+
+### 10.2 Contenido del Video
+
+El video explicativo cubre los siguientes temas:
+
+#### 🎯 Presentación General
+- Introducción al proyecto y su propósito
+- Objetivos principales de la plataforma
+- Públicos objetivo (programadores, usuarios, administradores)
+
+#### 🚀 Demo de Funcionalidades
+- Flujo de registro e inicio de sesión
+- Autenticación con Google OAuth
+- Sistema de roles y permisos en acción
+- Navegación por la plataforma
+
+#### 👥 Gestión de Perfiles
+- Creación y edición de perfil de usuario
+- Visualización de perfil público de programador
+- Campos personalizables según rol
+- Actualización de información en tiempo real
+
+#### 🎯 Sistema de Portafolios
+- Crear nuevos proyectos
+- Editar y eliminar proyectos
+- Información de tecnologías utilizadas
+- Visualización en galería pública
+
+#### 📅 Disponibilidad y Solicitudes
+- Configuración de horarios semanales
+- Creación de solicitudes de asesorías
+- Estados de solicitud (pending, reviewed, accepted, rejected, completed)
+- Flujo completo de una solicitud
+
+#### 👨‍💼 Panel Administrativo
+- Interfaz de administrador
+- Gestión de usuarios
+- Cambio de roles
+- Visualización de reportes
+
+#### 🏗️ Arquitectura Técnica
+- Estructura del proyecto
+- Flujo de componentes
+- Integración con Firebase
+- Patrón Context API
+
+#### 💻 Stack Tecnológico
+- Next.js 16 y sus características
+- React 19 y hooks modernos
+- TypeScript para seguridad de tipos
+- Tailwind CSS para estilos
+- Firebase para backend
+
+#### 📚 Configuración e Instalación
+- Paso a paso de instalación local
+- Configuración de variables de entorno
+- Setup de Firebase
+- Comandos de desarrollo
+
+#### 🚀 Despliegue en Producción
+- Opciones de hosting (Vercel, Firebase Hosting)
+- Configuración de despliegue
+- Variables de entorno en producción
+- Monitoreo y mantenimiento
+
+### 10.3 Propósito Educativo
+
+Este video serve como:
+
+1. **Herramienta de Aprendizaje**
+   - Demostración práctica de conceptos implementados
+   - Referencia visual para desarrolladores
+   - Tutorial para nuevos usuarios del sistema
+
+2. **Documentación Complementaria**
+   - Complementa la documentación técnica escrita
+   - Proporciona contexto visual de la arquitectura
+   - Facilita el entendimiento de flujos complejos
+
+3. **Presentación Profesional**
+   - Recurso para presentaciones académicas
+   - Material de demostración para stakeholders
+   - Referencia para entrevistas técnicas
+
+---
+
+## 11. RESULTADOS Y CONCLUSIONES
+
+### 11.1 Métricas de Éxito
 
 | Métrica | Objetivo | Resultado |
 |---------|----------|-----------|
@@ -936,7 +1032,7 @@ chore: Cambios de build, deps, etc.
 | Uptime | >99% | ✅ 99.9% |
 | Load Time | <2s | ✅ 1.8s promedio |
 
-### 10.2 Logros Clave
+### 11.2 Logros Clave
 
 ✅ **Arquitectura Escalable**
 - Estructura modular fácil de extender
@@ -961,7 +1057,7 @@ chore: Cambios de build, deps, etc.
 - Guías de usuario
 - API Reference
 
-### 10.3 Lecciones Aprendidas
+### 11.3 Lecciones Aprendidas
 
 #### Lección 1: Planificación es Crítica
 - Invertir tiempo en diseño evita retrabajos
@@ -988,7 +1084,7 @@ chore: Cambios de build, deps, etc.
 - Reduce bugs por malentendidos
 - Ayuda en mantenimiento futuro
 
-### 10.4 Mejoras Futuras
+### 11.4 Mejoras Futuras
 
 **Corto Plazo (Próximo sprint):**
 - [ ] Tests automatizados (Jest + RTL)
@@ -1007,7 +1103,7 @@ chore: Cambios de build, deps, etc.
 - [ ] Sistema de recomendaciones IA
 - [ ] Comunidad de programadores
 
-### 10.5 Recomendaciones
+### 11.5 Recomendaciones
 
 **Para Desarrolladores Posteriores:**
 
@@ -1042,7 +1138,7 @@ chore: Cambios de build, deps, etc.
    - Usar HTTPS
    - Revisar Firestore Rules regularmente
 
-### 10.6 Conclusiones
+### 11.6 Conclusiones
 
 **Portfolio Dev** es una aplicación moderna, segura y escalable que demuestra:
 
