@@ -16,7 +16,7 @@ export default function StandardApplications() {
   // Si es cliente, solo ve sus solicitudes creadas (no recibe solicitudes ni tiene calendario)
   if ((userData  as AppUser)?.role === "standard") {
     return (
-      <main className="bg-primary flex flex-col min-h-screen font-sans gap-8 py-10 px-8">
+      <main className="bg-primary flex flex-col min-h-screen font-sans gap-6 md:gap-8 py-6 md:py-10 px-4 sm:px-6 md:px-8">
         <div className="w-full">
           <ServiceApplicationsManager />
         </div>
@@ -27,11 +27,11 @@ export default function StandardApplications() {
   // Si es programador, ve las solicitudes que recibe + su disponibilidad
   if ((userData as AppUser)?.role === "programmer") {
     return (
-      <main className="bg-primary flex flex-col lg:flex-row min-h-screen font-sans gap-8 py-10 px-8">
-        <div className="flex-1">
+      <main className="bg-primary flex flex-col lg:flex-row min-h-screen font-sans gap-6 md:gap-8 py-6 md:py-10 px-4 sm:px-6 md:px-8">
+        <div className="flex-1 w-full">
           <ProgrammerApplications />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 w-full">
           <AvailabilityScheduler />
         </div>
       </main>
@@ -40,8 +40,8 @@ export default function StandardApplications() {
 
   // Admin ve ambas vistas (solicitudes que envía + solicitudes que recibe) + su disponibilidad
   return (
-    <main className="bg-primary flex flex-col min-h-screen font-sans gap-8 py-10 px-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <main className="bg-primary flex flex-col min-h-screen font-sans gap-6 md:gap-8 py-6 md:py-10 px-4 sm:px-6 md:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
         <ServiceApplicationsManager />
         <ProgrammerApplications />
       </div>

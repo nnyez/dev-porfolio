@@ -152,30 +152,30 @@ export default function ModalProject({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-secondary border border-accent/20 p-8 shadow-2xl">
+      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-secondary border border-accent/20 p-4 sm:p-6 md:p-8 shadow-2xl">
         {/* Encabezado */}
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-bold text-foreground">
+        <div className="mb-4 sm:mb-6 flex items-center justify-between gap-4">
+          <div className="flex-1">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
               {type === "create" ? "Nuevo Proyecto" : "Editar Proyecto"}
             </h2>
-            <p className="text-accent/80 mt-1">Completa los detalles del proyecto</p>
+            <p className="text-accent/80 mt-1 text-xs sm:text-sm">Completa los detalles del proyecto</p>
           </div>
           <button
             onClick={onClose}
-            className="text-accent hover:text-resalt transition-colors text-3xl font-bold"
+            className="text-accent hover:text-resalt transition-colors text-2xl md:text-3xl font-bold shrink-0"
           >
             
           </button>
         </div>
 
         {/* Formulario */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 md:space-y-5">
           {/* URL Proyecto */}
           <div>
             <label
               htmlFor="projectUrl"
-              className="block text-sm font-semibold text-foreground mb-2"
+              className="block text-xs sm:text-sm font-semibold text-foreground mb-2"
             >
               URL del proyecto
             </label>
@@ -183,11 +183,11 @@ export default function ModalProject({
               type="text"
               id="projectUrl"
               {...register("projectUrl")}
-              className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all"
+              className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all"
               placeholder="https://..."
             />
             {errors.projectUrl && (
-              <p className="mt-2 text-xs text-red-400">
+              <p className="mt-1 sm:mt-2 text-xs text-error font-medium">
                 {errors.projectUrl.message}
               </p>
             )}
@@ -197,7 +197,7 @@ export default function ModalProject({
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-semibold text-foreground mb-2"
+              className="block text-xs sm:text-sm font-semibold text-foreground mb-2"
             >
               Nombre del proyecto
             </label>
@@ -205,11 +205,11 @@ export default function ModalProject({
               type="text"
               id="name"
               {...register("name")}
-              className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all"
+              className="w-full rounded-lg border-2 border-resalt bg-primary px-4 py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all"
               placeholder="Nombre del proyecto"
             />
             {errors.name && (
-              <p className="mt-2 text-xs text-red-400">{errors.name.message}</p>
+              <p className="mt-2 text-xs text-error font-medium">{errors.name.message}</p>
             )}
           </div>
 
@@ -217,7 +217,7 @@ export default function ModalProject({
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-semibold text-foreground mb-2"
+              className="block text-xs sm:text-sm font-semibold text-foreground mb-2"
             >
               Descripción
             </label>
@@ -225,11 +225,11 @@ export default function ModalProject({
               id="description"
               rows={4}
               {...register("description")}
-              className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all resize-none"
+              className="w-full rounded-lg border-2 border-resalt bg-primary px-4 py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all resize-none"
               placeholder="Describe tu proyecto..."
             />
             {errors.description && (
-              <p className="mt-2 text-xs text-red-400">
+              <p className="mt-2 text-xs text-error font-medium">
                 {errors.description.message}
               </p>
             )}
@@ -239,7 +239,7 @@ export default function ModalProject({
           <div>
             <label
               htmlFor="imageUrl"
-              className="block text-sm font-semibold text-foreground mb-2"
+              className="block text-xs sm:text-sm font-semibold text-foreground mb-2"
             >
               URL de la imagen
             </label>
@@ -247,11 +247,11 @@ export default function ModalProject({
               type="text"
               id="imageUrl"
               {...register("imageUrl")}
-              className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all"
+              className="w-full rounded-lg border-2 border-resalt bg-primary px-4 py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all"
               placeholder="https://..."
             />
             {errors.imageUrl && (
-              <p className="mt-2 text-xs text-red-400">
+              <p className="mt-2 text-xs text-error font-medium">
                 {errors.imageUrl.message}
               </p>
             )}
@@ -259,7 +259,7 @@ export default function ModalProject({
 
           {/* Tecnologías (Tag Input) */}
           <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2">
               Tecnologías Usadas
             </label>
             <input
@@ -268,14 +268,14 @@ export default function ModalProject({
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Escribe una tecnología y presiona Enter..."
-              className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all"
+              className="w-full rounded-lg border-2 border-resalt bg-primary px-4 py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all"
             />
 
             <div className="mt-3 flex flex-wrap gap-2">
               {technologies.map((tech) => (
                 <span
                   key={tech}
-                  className="inline-flex items-center gap-2 rounded-full bg-accent/20 border border-accent/40 px-4 py-2 text-sm font-medium text-accent"
+                  className="inline-flex items-center gap-2 rounded-full bg-accent/20 border border-accent/40 px-4 py-2 text-sm font-medium text-foreground"
                 >
                   {tech}
                   <button
@@ -289,7 +289,7 @@ export default function ModalProject({
               ))}
             </div>
             {errors.technologiesUsed && (
-              <p className="mt-2 text-xs text-red-400">
+              <p className="mt-2 text-xs text-error font-medium">
                 {errors.technologiesUsed.message}
               </p>
             )}
@@ -297,7 +297,7 @@ export default function ModalProject({
 
           {/* Errores de Firebase */}
           {firebaseError && (
-            <div className="rounded-lg bg-red-500/20 border border-red-500/40 p-4 text-sm text-red-300">
+            <div className="rounded-lg bg-error/10 border-2 border-error/40 p-4 text-sm text-error font-medium">
               {firebaseError}
             </div>
           )}

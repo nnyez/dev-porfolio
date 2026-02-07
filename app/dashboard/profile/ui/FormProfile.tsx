@@ -1,6 +1,6 @@
 "use client";
 import { updateUserData } from "@/app/lib/firebaseRepository";
-import { AppUser, UserProgrammer } from "@/app/lib/types";
+import { AppUser } from "@/app/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -50,7 +50,7 @@ export default function Profile({
 
   useEffect(() => {
     if (userData?.role === "programmer" || userData?.role === "admin") {
-      const user = userData as UserProgrammer;
+      const user = userData as AppUser;
 
       reset({
         displayName: user?.displayName,
@@ -96,15 +96,15 @@ export default function Profile({
 
     <form
       onSubmit={handleSubmit(handleSubmitProfile)}
-      className={`bg-secondary border border-accent/20 rounded-2xl p-8 shadow-lg w-full ${
+      className={`bg-secondary border-2 border-accent/20 rounded-2xl p-4 sm:p-6 md:p-8 shadow-xl w-full ${
         userData?.role === "programmer" || userData?.role === "admin"
           ? "grid grid-cols-1 md:grid-cols-2"
           : "grid grid-cols-1"
-      } gap-6`}
+      } gap-4 md:gap-6`}
     >
       {/* Display Name */}
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-2" htmlFor="displayName">
+        <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="displayName">
           Nombre
         </label>
         <input
@@ -113,16 +113,16 @@ export default function Profile({
           type="text"
           id="displayName"
           placeholder="Tu nombre"
-          className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
         />
         {errors.displayName && (
-          <p className="mt-2 text-xs text-red-400">{errors.displayName.message}</p>
+          <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.displayName.message}</p>
         )}
       </div>
 
       {/* Email */}
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-2" htmlFor="email">
+        <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="email">
           Email
         </label>
         <input
@@ -131,16 +131,16 @@ export default function Profile({
           type="email"
           id="email"
           placeholder="tu@email.com"
-          className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
         />
         {errors.email && (
-          <p className="mt-2 text-xs text-red-400">{errors.email.message}</p>
+          <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.email.message}</p>
         )}
       </div>
 
       {/* Phone Number */}
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-2" htmlFor="phoneNumber">
+        <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="phoneNumber">
           Teléfono
         </label>
         <input
@@ -149,16 +149,16 @@ export default function Profile({
           type="tel"
           id="phoneNumber"
           placeholder="+1 (555) 000-0000"
-          className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
         />
         {errors.phoneNumber && (
-          <p className="mt-2 text-xs text-red-400">{errors.phoneNumber.message}</p>
+          <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.phoneNumber.message}</p>
         )}
       </div>
 
       {/* Photo URL */}
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-2" htmlFor="photoURL">
+        <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="photoURL">
           Foto URL
         </label>
         <input
@@ -167,10 +167,10 @@ export default function Profile({
           type="url"
           id="photoURL"
           placeholder="https://..."
-          className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
         />
         {errors.photoURL && (
-          <p className="mt-2 text-xs text-red-400">{errors.photoURL.message}</p>
+          <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.photoURL.message}</p>
         )}
       </div>
 
@@ -179,7 +179,7 @@ export default function Profile({
         <>
           {/* Title */}
           <div>
-            <label className="block text-sm font-semibold text-foreground mb-2" htmlFor="title">
+            <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="title">
               Título
             </label>
             <input
@@ -188,16 +188,16 @@ export default function Profile({
               type="text"
               id="title"
               placeholder="e.g., Full Stack Developer"
-              className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
             />
             {errors.title && (
-              <p className="mt-2 text-xs text-red-400">{errors.title.message}</p>
+              <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.title.message}</p>
             )}
           </div>
 
           {/* Experience Years */}
           <div>
-            <label className="block text-sm font-semibold text-foreground mb-2" htmlFor="experienceYears">
+            <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="experienceYears">
               Años de Experiencia
             </label>
             <input
@@ -206,28 +206,28 @@ export default function Profile({
               type="number"
               id="experienceYears"
               placeholder="0"
-              className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
             />
             {errors.experienceYears && (
-              <p className="mt-2 text-xs text-red-400">{errors.experienceYears.message}</p>
+              <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.experienceYears.message}</p>
             )}
           </div>
 
           {/* Bio */}
           <div className="md:col-span-2">
-            <label className="block text-sm font-semibold text-foreground mb-2" htmlFor="bio">
+            <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="bio">
               Biografía
             </label>
             <textarea
               disabled={!isEditing || !canEdit}
               {...register("bio")}
               id="bio"
-              rows={4}
+              rows={3}
               placeholder="Cuéntanos sobre ti..."
-              className="w-full rounded-lg border border-accent/30 bg-primary px-4 py-3 text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed resize-none"
+              className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60 resize-none"
             />
             {errors.bio && (
-              <p className="mt-2 text-xs text-red-400">{errors.bio.message}</p>
+              <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.bio.message}</p>
             )}
           </div>
         </>
@@ -235,27 +235,27 @@ export default function Profile({
 
       {/* Error Message */}
       {firebaseError && (
-        <div className="md:col-span-2 rounded-lg bg-red-500/20 border border-red-500/40 p-4 text-sm text-red-300">
+        <div className="md:col-span-2 rounded-lg bg-error/10 border-2 border-error/40 p-4 text-sm text-error font-medium">
           {firebaseError}
         </div>
       )}
 
       {/* Action Buttons */}
       {!canEdit ? null : (
-        <div className={`flex gap-3 pt-4 border-t border-accent/20 ${userData?.role === "programmer" || userData?.role === "admin" ? "md:col-span-2" : ""}`}>
+        <div className={`flex flex-col sm:flex-row gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-accent/20 ${userData?.role === "programmer" || userData?.role === "admin" ? "md:col-span-2" : ""}`}>
           {isEditing ? (
             <>
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="flex-1 rounded-lg border border-accent/30 bg-transparent px-6 py-3 text-sm font-semibold text-accent hover:bg-accent/10 transition-all"
+                className="flex-1 rounded-lg border border-accent/30 bg-transparent px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-accent hover:bg-accent/10 transition-all"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 rounded-lg bg-accent text-secondary px-6 py-3 text-sm font-semibold hover:bg-resalt transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 rounded-lg bg-accent text-secondary px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold hover:bg-resalt transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -271,7 +271,7 @@ export default function Profile({
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="w-full rounded-lg bg-accent text-secondary px-6 py-3 text-sm font-semibold hover:bg-resalt transition-all"
+              className="w-full rounded-lg bg-accent text-secondary px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold hover:bg-resalt transition-all"
             >
               Editar Perfil
             </button>

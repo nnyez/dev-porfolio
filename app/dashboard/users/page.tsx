@@ -23,38 +23,38 @@ export default function Users() {
   }, [user?.uid]);
   return (
     <RoleGuard allowedRoles={["admin"]} src="/dashboard/profile">
-      <div className="flex flex-col w-full py-10 px-8">
-        <div className="mb-10">
-          <h1 className="text-4xl font-bold text-foreground">Gestión de Usuarios</h1>
-          <p className="text-accent/80 mt-2">Administra los roles y permisos de los usuarios</p>
+      <div className="flex flex-col w-full py-6 md:py-10 px-4 sm:px-6 md:px-8">
+        <div className="mb-6 md:mb-10">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">Gestión de Usuarios</h1>
+          <p className="text-accent/80 mt-2 text-sm md:text-base">Administra los roles y permisos de los usuarios</p>
         </div>
 
-        <div className="bg-secondary border border-accent/20 rounded-2xl overflow-hidden shadow-lg">
+        <div className="bg-secondary border border-accent/20 rounded-2xl overflow-hidden shadow-lg w-full">
           {users.length === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-accent/60 text-lg">No hay usuarios registrados</p>
+            <div className="p-6 md:p-12 text-center">
+              <p className="text-accent/60 text-base md:text-lg">No hay usuarios registrados</p>
             </div>
           ) : (
             <>
-              <div className="px-6 py-4 border-b border-accent/20 bg-primary/50 flex items-center gap-4">
-                <PersonSearchIcon className="text-accent text-2xl!" />
-                <span className="text-sm font-semibold text-foreground">Total de usuarios: {users.length}</span>
+              <div className="px-4 md:px-6 py-3 md:py-4 border-b border-accent/20 bg-primary/50 flex items-center gap-3 md:gap-4">
+                <PersonSearchIcon className="text-accent text-lg md:text-2xl!" />
+                <span className="text-xs md:text-sm font-semibold text-foreground">Total de usuarios: {users.length}</span>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-sm md:text-base">
                   <thead>
                     <tr className="border-b border-accent/20">
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-accent">Nombre</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-accent">Email</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-accent">Rol</th>
-                      <th className="px-6 py-4 text-center text-sm font-semibold text-accent">Acciones</th>
+                      <th className="px-3 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-accent">Nombre</th>
+                      <th className="px-3 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-accent hidden md:table-cell">Email</th>
+                      <th className="px-3 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-accent">Rol</th>
+                      <th className="px-3 md:px-6 py-3 md:py-4 text-center text-xs md:text-sm font-semibold text-accent">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
                     {users.map((user) => (
                       <tr key={user.uid} className="border-b border-accent/10 hover:bg-primary/50 transition-colors">
-                        <td className="px-6 py-4 text-foreground font-medium">{user.displayName}</td>
-                        <td className="px-6 py-4 text-accent/80 text-sm">{user.email}</td>
+                        <td className="px-3 md:px-6 py-3 md:py-4 text-foreground font-medium text-xs md:text-base">{user.displayName}</td>
+                        <td className="px-3 md:px-6 py-3 md:py-4 text-accent/80 text-xs hidden md:table-cell">{user.email}</td>
                         <RoleRowActions user={user} />
                       </tr>
                     ))}

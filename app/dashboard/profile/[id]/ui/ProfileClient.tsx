@@ -1,11 +1,11 @@
 "use client";
 import { useAuth } from "@/app/context/AuthContext";
-import Image from "next/image";
 import { AppUser } from "@/app/lib/types";
 import FormProfile from "../../ui/FormProfile";
 import { useEffect, useState } from "react";
 import { getUserData } from "@/app/lib/firebaseRepository";
 import AvailabilityScheduler from "../../../standard-applications/ui/AvailabilityScheduler";
+import OptimizedImage from "@/app/ui/shared/OptimizedImage";
 
 export default function ProfileClient({ userId }: { userId: string }) {
   const [userD, setUserD] = useState<AppUser | null>(null);
@@ -27,7 +27,7 @@ export default function ProfileClient({ userId }: { userId: string }) {
           <div>
             <h1 className="mb-6 text-4xl font-bold">User Profile</h1>
             <div className="bg-alt relative mb-6 aspect-square w-72 overflow-hidden rounded-full">
-              <Image
+              <OptimizedImage
                 src={userD?.photoURL || "/profile.svg"}
                 alt="User Profile"
                 fill

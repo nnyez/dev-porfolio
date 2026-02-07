@@ -6,7 +6,7 @@ interface LabelChipProps {
 
 export function LabelChip({ text, className }: LabelChipProps) {
   return (
-    <label className={`px-4 py-2 rounded-full from-accent to-resalt text-secondary bg-linear-150 ${className}`}>
+    <label className={`px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm rounded-full from-accent to-resalt text-secondary bg-linear-150 ${className}`}>
       {text}
     </label>
   );

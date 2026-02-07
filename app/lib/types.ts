@@ -10,42 +10,35 @@ export type UserRole = 'standard' | 'programmer' | 'admin';
 // Estados posibles de una solicitud
 export type ApplicationStatus = 'pending' | 'reviewed' | 'accepted' | 'rejected' | 'completed';
 
-// ===== USUARIOS (Discriminated Unions) =====
+// ===== USUARIOS =====
 
-// Base común para todos los usuarios
-export interface UserBase {
+/**
+ * Estructura unificada de usuario
+ * Los campos opcionales dependen del rol:
+ * - standard: solo campos base
+ * - programmer: title, bio, programmingLanguages, experienceYears
+ * - admin: title (opcional)
+ */
+export interface AppUser {
   uid: string;
   email: string;
   displayName: string;
   photoURL?: string;
   phoneNumber?: string;
   role: UserRole;
+  
+  // Campos opcionales por rol (principalmente programadores)
+  title?: string;                    // Ej: "Senior Fullstack Dev"
+  bio?: string;                      // Descripción profesional
+  programmingLanguages?: string[];   // ["JavaScript", "Python", "C#"]
+  experienceYears?: number;          // Años de experiencia
 }
 
-// Cliente estándar (quien solicita servicios)
-export interface UserStandard extends UserBase {
-  role: 'standard';
-  companyName?: string;
-}
-
-// Programador (ofrece servicios de desarrollo)
-export interface UserProgrammer extends UserBase {
-  role: 'programmer';
-  title: string; // Ej: "Senior Fullstack Dev"
-  bio?: string;
-  programmingLanguages: string[]; // ["JavaScript", "Python"]
-  skills: string[]; // ["React", "Firebase", "Scrum"]
-  experienceYears: number;
-}
-
-// Administrador del sistema
-export interface UserAdmin extends UserBase {
-  role: 'admin';
-  permissions: string[]; // ["manage_users", "view_reports"]
-}
-
-// Tipo unificado para usar en la aplicación
-export type AppUser = UserStandard | UserProgrammer | UserAdmin;
+// Alias para mantener compatibilidad si se usa en componentes
+export type UserBase = AppUser;
+export type UserStandard = AppUser;
+export type UserProgrammer = AppUser;
+export type UserAdmin = AppUser;
 
 
 // ===== PROYECTOS =====

@@ -1,71 +1,47 @@
 @import "tailwindcss";
 
 :root {
+  /* Colores base del tema */
   --background: #261343;
   --foreground: #fffee0;
+  
+  /* Paleta de colores para Tailwind */
+  --primary: #1a0d2e;
+  --secondary: #3d1f5c;
+  --alt: #5a2e8a;
+  --accent: #a366ff;
+  --resalt: #7d4fcf;
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-quicksand: var(--font-quicksand);
-  --font-opensans: var(--font-opensans);
-  --font-roboto-mono: var(--font-roboto-mono);
-
-  --color-primary: #320d6e;
-  --color-secondary: #261343;
-  --color-font: #fffee0;
-  --color-accent: #b693ed;
-
-  --color-resalt: #fffcb8;
-  --color-alt: #520d6e;
-  --color-resalt-alt: #130d6e;
-
-  /* Morado -> Magenta -> Naranja quemado (no amarillo) -> Rosa */
-  /* Gama de verdes y azules tecnológicos */
-  --color-a: #c9a4ff; /* Verde negro */
-  --color-b: #432b67; /* Verde bosque */
-  --color-c: #674f8b; /* Verde matriz */
-  --color-d: #917cb0; /* Verde medio */
-  --color-e: #cba9ff; /* Verde menta */
-  --color-f: #dbc8f8; /* Verde claro */
-  --color-g: #c1b5d4; /* Turquesa (el acento) */
-}
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
 
 @theme {
-  --animate-fade-rainbow: fade-rainbow 3s linear infinite;
-  @keyframes fade-rainbow {
-    0% {
-      background-position: 0% 50%;
-    }
-    100% {
-      background-position: 300% 50%;
-    }
-  }
+  --color-primary: #1a0d2e;
+  --color-secondary: #3d1f5c;
+  --color-alt: #5a2e8a;
+  --color-accent: #a366ff;
+  --color-resalt: #7d4fcf;
+  --color-background: #261343;
+  --color-foreground: #fffee0;
 }
 
 @layer base {
   h1 {
-    font-size: var(--text-5xl);
+    font-size: clamp(1.5rem, 5vw, 3.75rem);
   }
   h2 {
-    font-size: var(--text-4xl);
+    font-size: clamp(1.25rem, 4vw, 2.25rem);
   }
   h3 {
-    font-size: var(--text-3xl);
+    font-size: clamp(1.125rem, 3.5vw, 1.875rem);
   }
   h4 {
-    font-size: var(--text-2xl);
+    font-size: clamp(1rem, 3vw, 1.5rem);
   }
   p {
-    font-size: var(--text-xl);
+    font-size: clamp(0.875rem, 2vw, 1.25rem);
   }
   h1,
   h2,
@@ -86,9 +62,85 @@
   h1 span {
     font-weight: 900;
   }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    scroll-behavior: smooth;
+  }
+
+  input, textarea, select {
+    font-size: 1rem;
+  }
+
+  /* Estilos mejorados para inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  textarea,
+  select {
+    background-color: var(--primary);
+    color: var(--foreground);
+    border-color: var(--resalt);
+    caret-color: var(--accent);
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="number"]:focus,
+  textarea:focus,
+  select:focus {
+    background-color: var(--secondary);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(163, 102, 255, 0.1);
+  }
+
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="password"]::placeholder,
+  input[type="tel"]::placeholder,
+  input[type="url"]::placeholder,
+  input[type="number"]::placeholder,
+  textarea::placeholder {
+    color: rgba(255, 254, 224, 0.4);
+  }
+
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    background-color: rgba(163, 102, 255, 0.05);
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
 }
 
-body {
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
   background: var(--background);
-  color: var(--foreground);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--resalt);
+}
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
 }

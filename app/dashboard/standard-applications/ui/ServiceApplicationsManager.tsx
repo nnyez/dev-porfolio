@@ -9,7 +9,7 @@ import {
   deleteServiceApplication,
   getAllUsers,
 } from "@/app/lib/firebaseRepository";
-import { ServiceApplication, UserProgrammer, AppUser } from "@/app/lib/types";
+import { ServiceApplication, AppUser } from "@/app/lib/types";
 import { useAuth } from "@/app/context/AuthContext";
 import { notifyNewApplication } from "@/app/lib/email-actions";
 
@@ -51,7 +51,7 @@ export default function ServiceApplicationsManager() {
         const progList = data
           .filter((u) => u.role === "programmer" || u.role === "admin")
           .map((p) => {
-            const roleLabel = p.role === "admin" ? "Administrador" : (p as UserProgrammer).title || "Programador";
+            const roleLabel = p.role === "admin" ? "Administrador" : (p as AppUser).title || "Programador";
             return {
               ...p,
               label: `${p.displayName} (${roleLabel})`,

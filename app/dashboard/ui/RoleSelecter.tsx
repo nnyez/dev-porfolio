@@ -60,12 +60,12 @@ export default function RoleSelecter({ userId, currentRole }: Props) {
         value={internalRole}
         onChange={handleChange}
         disabled={updating}
-        className={`block w-full rounded-lg border border-accent/30 bg-primary text-foreground px-4 py-2 text-sm font-semibold focus:border-accent focus:ring-2 focus:ring-accent/30 focus:outline-none transition-all ${
-          updating ? "cursor-wait opacity-60" : ""
-        }`}
+        className={`block w-full rounded-lg border-2 border-resalt bg-primary text-foreground text-base px-4 py-2 font-semibold focus:border-accent focus:ring-2 focus:ring-accent/30 focus:outline-none transition-all placeholder-accent/50 ${
+          updating ? "cursor-wait opacity-60" : "cursor-pointer"
+        } disabled:bg-primary/60 disabled:opacity-70`}
       >
         {ROLES.map((role) => (
-          <option key={role} value={role} className="bg-secondary">
+          <option key={role} value={role} className="bg-secondary text-foreground">
             {role.charAt(0).toUpperCase() + role.slice(1)}
           </option>
         ))}

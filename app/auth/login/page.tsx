@@ -58,28 +58,28 @@ export default function Login() {
   };
 
   return (
-    <section className="from-secondary via-alt to-primary flex min-h-screen min-w-full flex-col items-center justify-center bg-linear-45 font-sans">
-      <div className="bg-secondary shadow-alt flex min-w-1/4 flex-col gap-y-5 rounded-2xl p-10 shadow-lg">
-        <h1 className="text-center font-bold">Iniciar Sesión</h1>
+    <section className="flex min-h-screen min-w-full flex-col items-center justify-center bg-linear-to-r from-secondary via-alt to-primary font-sans px-4 py-8">
+      <div className="bg-secondary border border-accent/20 flex w-full max-w-md flex-col gap-y-4 md:gap-y-5 rounded-2xl p-6 md:p-10 shadow-xl">
+        <h1 className="text-center text-2xl md:text-3xl font-bold text-foreground">Iniciar Sesión</h1>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-y-5"
+          className="flex flex-col gap-y-4 md:gap-y-5"
         >
           {/* Input Email */}
           <div className="flex flex-col gap-y-2">
-            <label htmlFor="email">Email:</label>
+            <label htmlFor="email" className="text-sm md:text-base font-semibold text-foreground">Email:</label>
             <input
               id="email"
-              type="text"
+              type="email"
               {...register("email")}
               placeholder="ejemplo@ejem.com"
-              className={`border-resalt font-roboto-mono rounded-md border-2 p-2 ${
-                errors.email ? "border-red-500" : ""
+              className={`rounded-lg border-2 bg-primary px-3 md:px-4 py-2 md:py-3 text-base text-foreground placeholder-accent/40 font-roboto-mono focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all ${
+                errors.email ? "border-error" : "border-resalt"
               }`}
             />
             {errors.email && (
-              <span className="text-sm text-red-500">
+              <span className="text-xs md:text-sm text-error font-medium">
                 {errors.email.message}
               </span>
             )}
@@ -87,18 +87,18 @@ export default function Login() {
 
           {/* Input Password */}
           <div className="flex flex-col gap-y-2">
-            <label htmlFor="password">Password:</label>
+            <label htmlFor="password" className="text-sm md:text-base font-semibold text-foreground">Password:</label>
             <input
               id="password"
               type="password"
               {...register("password")}
-              placeholder="*******"
-              className={`border-resalt rounded-md border-2 p-2 ${
-                errors.password ? "border-red-500" : ""
+              placeholder="••••••••"
+              className={`rounded-lg border-2 bg-primary px-3 md:px-4 py-2 md:py-3 text-base text-foreground placeholder-accent/40 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all ${
+                errors.password ? "border-error" : "border-resalt"
               }`}
             />
             {errors.password && (
-              <span className="text-sm text-red-500">
+              <span className="text-xs md:text-sm text-error font-medium">
                 {errors.password.message}
               </span>
             )}
@@ -107,7 +107,7 @@ export default function Login() {
           {/* Errores Globales */}
           <div>
             {firebaseError && (
-              <p className="font-roboto-mono text-center text-sm font-bold text-red-500">
+              <p className="font-roboto-mono text-center text-xs md:text-sm font-bold text-error bg-error/10 p-3 rounded-lg border border-error/30">
                 {firebaseError}
               </p>
             )}
@@ -117,7 +117,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-accent text-secondary hover:bg-resalt rounded-md p-2 font-bold transition-colors disabled:opacity-50"
+            className="bg-accent text-secondary hover:bg-resalt rounded-lg px-4 py-3 text-base md:text-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full mt-2"
           >
             {isSubmitting ? "Entrando..." : "Entrar"}
           </button>
@@ -125,11 +125,11 @@ export default function Login() {
           <ButtonGoogle isRegister={false} />
 
           {/* Link para ir a Registro */}
-          <div className="mt-2 text-center text-sm">
+          <div className="mt-2 text-center text-xs md:text-sm text-foreground">
             <span>¿No tienes cuenta? </span>
             <Link
               href="/auth/register"
-              className="text-accent font-bold hover:underline"
+              className="text-accent font-bold hover:text-resalt hover:underline transition-colors"
             >
               Regístrate aquí
             </Link>

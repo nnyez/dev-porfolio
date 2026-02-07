@@ -15,7 +15,7 @@ export default function SignUpButton({
     <>
       <Link
         href={href}
-        className={`bg-resalt text-primary hover:bg-accent transform rounded-md px-4 py-2 font-bold transition-all duration-100 ease-out hover:scale-105 ${route === href ? "pointer-events-none opacity-50" : ""}`}
+        className={`bg-resalt text-primary hover:bg-accent transform rounded-md px-3 sm:px-4 py-2 text-sm sm:text-base font-bold transition-all duration-100 ease-out hover:scale-105 ${route === href ? "pointer-events-none opacity-50" : ""}`}
       >
         {text}
       </Link>

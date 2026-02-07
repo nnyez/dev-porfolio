@@ -26,12 +26,12 @@ export default function Profile({
     return () => subscription.unsubscribe();
   }, [id]);
   return (
-    <section className="bg-secondary m-10 mt-10   grid grid-cols-2 items-center justify-center p-10 ">
+    <section className="bg-secondary m-4 sm:m-6 md:m-10 mt-4 sm:mt-6 md:mt-10 grid grid-cols-1 lg:grid-cols-2 items-start justify-center gap-6 md:gap-8 p-4 sm:p-6 md:p-10 rounded-2xl">
       {userD ? (
         <>
           <div>
-            <h1 className="mb-6 text-4xl font-bold">User Profile</h1>
-            <div className="bg-alt relative mb-6 aspect-square w-72 overflow-hidden rounded-full">
+            <h1 className="mb-4 md:mb-6 text-2xl sm:text-3xl md:text-4xl font-bold">Perfil de Usuario</h1>
+            <div className="bg-alt relative mb-4 md:mb-6 aspect-square w-full sm:w-64 md:w-72 overflow-hidden rounded-full mx-auto lg:mx-0">
               <Image
                 src={userD?.photoURL || "/profile.svg"}
                 alt="User Profile"
@@ -41,10 +41,12 @@ export default function Profile({
             </div>
             <FormProfile userData={userD} canEdit={userData?.uid === id} />
           </div>
-          <AvailabilityScheduler onlyView={userData?.uid !== id} />
+          <div className="w-full">
+            <AvailabilityScheduler onlyView={userData?.uid !== id} />
+          </div>
         </>
       ) : (
-        <p>Loading...</p>
+        <p className="text-center col-span-full">Cargando...</p>
       )}
     </section>
   );

@@ -182,10 +182,10 @@ export default function AvailabilityScheduler({
                       </span>
                       <input
                         type="time"
-                        className={`bg-primary text-foreground focus:ring-accent/30 rounded-lg border px-3 py-2 text-sm transition-all focus:ring-2 focus:outline-none ${
+                        className={`bg-primary text-base text-foreground focus:ring-accent/30 rounded-lg border-2 px-3 py-2 transition-all focus:ring-2 focus:outline-none ${
                           itemErrors?.slots?.start
-                            ? "border-red-500/60"
-                            : "border-accent/30"
+                            ? "border-error/60"
+                            : "border-resalt"
                         }`}
                         {...register(`schedule.${index}.slots.start`)}
                       />
@@ -199,10 +199,10 @@ export default function AvailabilityScheduler({
                       </span>
                       <input
                         type="time"
-                        className={`bg-primary text-foreground focus:ring-accent/30 rounded-lg border px-3 py-2 text-sm transition-all focus:ring-2 focus:outline-none ${
+                        className={`bg-primary text-base text-foreground focus:ring-accent/30 rounded-lg border-2 px-3 py-2 transition-all focus:ring-2 focus:outline-none ${
                           itemErrors?.slots?.end
-                            ? "border-red-500/60"
-                            : "border-accent/30"
+                            ? "border-error/60"
+                            : "border-resalt"
                         }`}
                         {...register(`schedule.${index}.slots.end`)}
                       />
@@ -217,7 +217,7 @@ export default function AvailabilityScheduler({
 
               {/* Mensaje de Error */}
               {isEnabled && timeError && (
-                <div className="mt-2 ml-1 flex animate-pulse items-center gap-1 text-xs text-red-400">
+                <div className="mt-2 ml-1 flex animate-pulse items-center gap-1 text-xs text-error font-medium">
                   <ErrorIcon className="h-3 w-3" />
                   {timeError}
                 </div>

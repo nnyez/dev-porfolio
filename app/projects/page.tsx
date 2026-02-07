@@ -4,7 +4,7 @@ import { getAllProjects, getAllUsers } from "../lib/firebaseRepository";
 import { useAuth } from "../context/AuthContext";
 import { where } from "firebase/firestore";
 import { GridCard } from "../ui/shared/GridCard";
-import { Project, UserProgrammer } from "../lib/types";
+import { Project, AppUser } from "../lib/types";
 import { CellUser } from "./ui/CellUser";
 
 // Metadata para la página de proyectos
@@ -12,8 +12,8 @@ import { CellUser } from "./ui/CellUser";
 // Para páginas dinámicas, usa layout.tsx en el mismo directorio
 
 export default function Projects() {
-  const [programmers, setProgrammers] = useState<UserProgrammer[]>();
-  const [programer, setProgramer] = useState<UserProgrammer | null>(null);
+  const [programmers, setProgrammers] = useState<AppUser[]>();
+  const [programer, setProgramer] = useState<AppUser | null>(null);
   const [projects, setProjects] = useState<Project[]>();
   const { userData } = useAuth();
 
@@ -22,7 +22,7 @@ export default function Projects() {
 
     const subscribe = getAllUsers(userData?.uid || "", q).subscribe({
       next: (data) => {
-        setProgrammers(data as UserProgrammer[]);
+        setProgrammers(data as AppUser[]);
       },
       error: (err) => console.error("Error fetching programmers:", err),
     });
@@ -44,25 +44,25 @@ export default function Projects() {
     return () => subscribe.unsubscribe();
   }, [programer]);
 
-  const handleSelectProgrammer = (programmer: UserProgrammer) => {
+  const handleSelectProgrammer = (programmer: AppUser) => {
     setProgramer(programmer);
   };
 
   return (
     <main
       onClick={() => setProgramer(null)}
-      className="bg-primary flex min-h-screen flex-col font-sans"
+      className="bg-primary flex min-h-screen flex-col font-sans w-full"
     >
       {/* Header */}
-      <section className="border-b border-accent/20 px-8 py-10">
-        <h1 className="text-4xl font-bold text-foreground">Portafolio de Desarrolladores</h1>
-        <p className="text-accent/80 mt-2">Explora los proyectos de nuestros desarrolladores</p>
+      <section className="border-b border-accent/20 px-4 sm:px-6 md:px-8 py-6 md:py-10">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">Portafolio de Desarrolladores</h1>
+        <p className="text-accent/80 mt-2 text-sm md:text-base">Explora los proyectos de nuestros desarrolladores</p>
       </section>
 
       {/* Filtro de Programadores */}
-      <section className="px-8 py-8">
-        <h2 className="text-lg font-semibold text-foreground mb-6">Selecciona un Desarrollador</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4">
+      <section className="px-4 sm:px-6 md:px-8 py-6 md:py-8">
+        <h2 className="text-base md:text-lg font-semibold text-foreground mb-4 md:mb-6">Selecciona un Desarrollador</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
           {programmers?.map((programmer) => (
             <CellUser
               key={programmer.uid}
@@ -75,22 +75,22 @@ export default function Projects() {
       </section>
 
       {/* Proyectos */}
-      <section className="flex-1 px-8 py-8">
+      <section className="flex-1 px-4 sm:px-6 md:px-8 py-6 md:py-8 w-full">
         <div>
-          <div className="mb-8">
+          <div className="mb-6 md:mb-8">
             {programer ? (
               <>
-                <h2 className="text-2xl font-bold text-foreground">
+                <h2 className="text-xl md:text-2xl font-bold text-foreground">
                   Proyectos de <span className="text-accent">{programer.displayName}</span>
                 </h2>
-                <p className="text-accent/80 mt-2">
+                <p className="text-accent/80 mt-2 text-sm md:text-base">
                   {projects?.length || 0} {projects?.length === 1 ? "proyecto" : "proyectos"}
                 </p>
               </>
             ) : (
               <>
-                <h2 className="text-2xl font-bold text-foreground">Todos los Proyectos</h2>
-                <p className="text-accent/80 mt-2">
+                <h2 className="text-xl md:text-2xl font-bold text-foreground">Todos los Proyectos</h2>
+                <p className="text-accent/80 mt-2 text-sm md:text-base">
                   {projects?.length || 0} {projects?.length === 1 ? "proyecto" : "proyectos"}
                 </p>
               </>

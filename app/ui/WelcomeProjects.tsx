@@ -2,9 +2,9 @@ import { GridCard } from "./shared/GridCard";
 
 export default function WelcomeProjects() {
   return (
-    <section className="flex flex-col items-center justify-center">
-      <h1>¿En que hemos trabajado?</h1>
-      <div className="grid max-h-175 w-full grid-cols-2 grid-rows-2 gap-5 p-5">
+    <section className="flex flex-col items-center justify-center px-4 sm:px-8 md:px-10 py-8 md:py-12">
+      <h1 className="text-2xl sm:text-4xl md:text-5xl mb-6 md:mb-8">¿En qué hemos trabajado?</h1>
+      <div className="grid max-h-auto md:max-h-175 w-full grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 p-4 md:p-5 auto-rows-fr">
         <GridCard
         srcRepo="https://smiservis.com/"
           chips={["MySQL", "Tailwind", "NextJS", "Web"]}
