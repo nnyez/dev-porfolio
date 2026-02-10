@@ -1,7 +1,9 @@
 "use client";
 import Image from "next/image";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { useRouter } from "next/navigation";
+
+const DEFAULT_PROJECT_IMAGE = "/projects/planning-app1.jpeg";
 
 export function GridCard({
   children,
@@ -20,19 +22,31 @@ export function GridCard({
   displayName?: string;
 }) {
   const router = useRouter();
+  const [imageSrc, setImageSrc] = useState(src || DEFAULT_PROJECT_IMAGE);
+  const [hasError, setHasError] = useState(false);
+  
+  const handleImageError = () => {
+    if (!hasError) {
+      console.warn(`⚠️ Error cargando imagen: ${src}`);
+      setImageSrc(DEFAULT_PROJECT_IMAGE);
+      setHasError(true);
+    }
+  };
   
   return (
     <div className={`group bg-secondary border border-accent/20 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-accent/40 flex flex-col h-full ${className || ""}`}>
       {/* Imagen */}
       <div className="relative h-40 sm:h-48 md:h-56 overflow-hidden bg-primary/50">
         <Image
-          src={src}
+          src={imageSrc}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-110 cursor-pointer"
-          alt={src}
+          alt={src || "Project image"}
           onClick={() => {
             router.push(srcRepo);
           }}
+          onError={handleImageError}
+          unoptimized={hasError}
         />
         
         {/* Overlay con información */}

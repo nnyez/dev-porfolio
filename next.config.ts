@@ -64,6 +64,17 @@ const nextConfig = {
         hostname: "lh.google.com",
         pathname: "/**",
       },
+      // Permitir cualquier dominio HTTPS para mayor flexibilidad
+      {
+        protocol: "https",
+        hostname: "**",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "**",
+        pathname: "/**",
+      },
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 3600,
