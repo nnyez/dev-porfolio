@@ -1,7 +1,7 @@
 "use client";
 import RoleGuard from "@/app/auth/guards/RoleWard";
-import { getAllUsers } from "@/app/lib/deprecated/firebase/firebaseRepository";
-import { AppUser } from "@/app/lib/config/types";
+import { getAllProfiles } from "@/app/lib/users/UsersRepository";
+import { UserProfileResponseDto } from "@/app/lib/schema/types";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -11,12 +11,13 @@ import { useAuth } from "@/app/lib/context/Auth/AuthContext";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import Link from "next/link";
 import { Role } from "@/app/lib/schema/types";
+
 export default function Users() {
-  const [users, setUsers] = useState<AppUser[]>([]);
+  const [users, setUsers] = useState<UserProfileResponseDto[]>([]);
   const { user } = useAuth();
 
   useEffect(() => {
-    const subscription = getAllUsers(user?.userId?.toString() || "").subscribe({
+    const subscription = getAllProfiles().subscribe({
       next: (data) => setUsers(data),
       error: (err) => console.error("Error fetching users:", err),
     });
@@ -52,10 +53,10 @@ export default function Users() {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.map((user) => (
-                      <tr key={user.uid} className="border-b border-accent/10 hover:bg-primary/50 transition-colors">
-                        <td className="px-3 md:px-6 py-3 md:py-4 text-foreground font-medium text-xs md:text-base">{user.displayName}</td>
-                        <td className="px-3 md:px-6 py-3 md:py-4 text-accent/80 text-xs hidden md:table-cell">{user.email}</td>
+                    {users.map((user, index) => (
+                      <tr key={user.id ?? index} className="border-b border-accent/10 hover:bg-primary/50 transition-colors">
+                        <td className="px-3 md:px-6 py-3 md:py-4 text-foreground font-medium text-xs md:text-base">{user.userName || "Sin nombre"}</td>
+                        <td className="px-3 md:px-6 py-3 md:py-4 text-accent/80 text-xs hidden md:table-cell">{user.userEmail}</td>
                         <RoleRowActions user={user} />
                       </tr>
                     ))}
@@ -70,17 +71,17 @@ export default function Users() {
   );
 }
 
-export function RoleRowActions({ user }: { user: AppUser }) {
+export function RoleRowActions({ user }: { user: UserProfileResponseDto }) {
   const [isEdditing, setIsEditing] = useState<boolean | null>(null);
 
   return (
     <>
       <td className="px-6 py-4">
         {isEdditing ? (
-          <RoleSelecter userId={user.uid} currentRole={user.role} />
+          <RoleSelecter userId={user.id?.toString() ?? ""} currentRole={user.role || "STANDARD"} />
         ) : (
           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-accent/20 border border-accent/40 text-accent">
-            {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+            {(user.role || "STANDARD").charAt(0).toUpperCase() + (user.role || "STANDARD").slice(1).toLowerCase()}
           </span>
         )}
       </td>
@@ -101,7 +102,7 @@ export function RoleRowActions({ user }: { user: AppUser }) {
           <DeleteIcon className="text-lg!" />
         </button>
         <Link
-          href={`/dashboard/profile/${user.uid}`}
+          href={`/dashboard/profile/${user.id}`}
           className="p-2 rounded-lg bg-accent/20 text-accent hover:bg-accent/40 transition-all duration-200"
           title="Ver perfil"
         >

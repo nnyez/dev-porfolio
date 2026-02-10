@@ -2,7 +2,7 @@ import { from, map, catchError, switchMap, of } from "rxjs";
 import { throwError } from "rxjs";
 import { API_BASE_URL, getCurrentSession } from "../auth/AuthService";
 import { UserProfile } from "../schema/UserProfile";
-import { ProfileExists, Role } from "../schema/types";
+import { ProfileExists, Role, UserProfileResponseDto } from "../schema/types";
 import {
   StandardProfileResponseDto,
   CreateStandardProfileDto,
@@ -660,4 +660,45 @@ export function getAllDeveloperProfiles() {
  */
 export function getProgrammers() {
   return getAllDeveloperProfiles();
+}
+
+/**
+ * Obtener todos los perfiles de usuarios independiente del rol
+ * GET /api/profiles/all (Solo ADMIN)
+ */
+export function getAllProfiles() {
+  const authSession = getCurrentSession();
+  const token = authSession?.user?.token;
+
+  if (!token) {
+    console.error(
+      "❌ [UsersRepository] No hay token disponible para la autenticación",
+    );
+    return throwError(() => new Error("No hay token de autenticación"));
+  }
+
+  return from(
+    fetch(`${API_BASE_URL}api/profiles/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => {
+      if (!res.ok) {
+        throw new Error(
+          `Error al obtener todos los perfiles: ${res.statusText}`,
+        );
+      }
+      return res.json();
+    }),
+  ).pipe(
+    map((data) => {
+      return data as UserProfileResponseDto[];
+    }),
+    catchError((error) => {
+      console.error("❌ [UsersRepository] Error al obtener todos los perfiles:", error);
+      return throwError(() => error);
+    }),
+  );
 }
