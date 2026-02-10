@@ -9,7 +9,7 @@ import {
 import "./globals.css";
 import Navbar from "./ui/Navbar";
 import Footbar from "./ui/Footbar";
-import AuthProvider from "./context/AuthContext";
+import AuthProvider from "./lib/context/Auth/AuthContext";  
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

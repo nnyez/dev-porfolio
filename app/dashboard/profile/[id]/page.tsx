@@ -1,10 +1,11 @@
 "use client";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth } from "@/app/lib/context/Auth/AuthContext";
 import Image from "next/image";
-import { AppUser } from "@/app/lib/types";
+import { UserProfile } from "@/app/lib/schema/UserProfile";
+import { AppUser } from "@/app/lib/config/types";
 import FormProfile from "../ui/FormProfile";
 import { use, useEffect, useState } from "react";
-import { getUserData } from "@/app/lib/firebaseRepository";
+import { getUserData } from "@/app/lib/deprecated/firebase/firebaseRepository";
 import AvailabilityScheduler from "../../standard-applications/ui/AvailabilityScheduler";
 
 export default function Profile({
@@ -33,16 +34,16 @@ export default function Profile({
             <h1 className="mb-4 md:mb-6 text-2xl sm:text-3xl md:text-4xl font-bold">Perfil de Usuario</h1>
             <div className="bg-alt relative mb-4 md:mb-6 aspect-square w-full sm:w-64 md:w-72 overflow-hidden rounded-full mx-auto lg:mx-0">
               <Image
-                src={userD?.photoURL || "/profile.svg"}
+                src={userD?.photoUrl || "/profile.svg"}
                 alt="User Profile"
                 fill
                 className="object-cover"
               />
             </div>
-            <FormProfile userData={userD} canEdit={userData?.uid === id} />
+            <FormProfile userData={userD as unknown as UserProfile} canEdit={userData?.auth?.userId?.toString() === id} />
           </div>
           <div className="w-full">
-            <AvailabilityScheduler onlyView={userData?.uid !== id} />
+            <AvailabilityScheduler onlyView={userData?.auth?.userId?.toString() !== id} />
           </div>
         </>
       ) : (

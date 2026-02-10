@@ -1,5 +1,5 @@
+import { useAuth } from "@/app/lib/context/Auth/AuthContext";
 import NavLink from "./Navlink";
-import { useAuth } from "@/app/context/AuthContext";
 
 export default function Navigation(v: boolean) {
   const { user } = useAuth();
@@ -22,6 +22,12 @@ export default function Navigation(v: boolean) {
       <NavLink
         route="/projects"
         text="Proyectos"
+        className="hover:text-accent hover:scale-130"
+      />
+
+      <NavLink
+        route="/test"
+        text="Test"
         className="hover:text-accent hover:scale-130"
       />
 

@@ -1,3 +1,9 @@
+/**
+ * @deprecated Este módulo está deprecado y no debe ser utilizado.
+ * Las funciones aquí contenidas han sido reemplazadas por alternativas más recientes.
+ * Por favor, utilizar los servicios actualizados en lugar de este módulo.
+ */
+
 import {
   collection,
   deleteDoc,
@@ -11,7 +17,7 @@ import {
   QuerySnapshot,
   DocumentSnapshot,
 } from "firebase/firestore";
-import { AppUser, Project, UserAvailabilityConfig, ServiceApplication } from "./types";
+import { AppUser, Project, UserAvailabilityConfig, ServiceApplication } from "../../config/types";
 import { db } from "@/firebase.config";
 import { catchError, defer, from, map, Observable, of } from "rxjs";
 

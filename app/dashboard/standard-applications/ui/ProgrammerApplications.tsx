@@ -3,123 +3,109 @@
 import React, { useState, useEffect } from "react";
 import { Check, X, Eye } from "lucide-react";
 import {
-  getApplicationsForProgrammer,
+  getApplicationsByProgrammer,
   updateApplicationStatus,
-} from "@/app/lib/firebaseRepository";
-import { ServiceApplication } from "@/app/lib/types";
-import { useAuth } from "@/app/context/AuthContext";
-import { notifyApplicationAccepted, notifyApplicationRejected } from "@/app/lib/email-actions";
+} from "@/app/lib/applications/ApplicationsRepository";
+import {
+  ApplicationResponseDto,
+  ApplicationStatus,
+  UpdateApplicationStatusDto,
+} from "@/app/lib/schema/ServiceApplication";
+import { useAuth } from "@/app/lib/context/Auth/AuthContext";
 
 export default function ProgrammerApplications() {
   const { user } = useAuth();
-  const [applications, setApplications] = useState<ServiceApplication[]>([]);
+  const [applications, setApplications] = useState<ApplicationResponseDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedApp, setSelectedApp] = useState<ServiceApplication | null>(null);
+  const [selectedApp, setSelectedApp] = useState<ApplicationResponseDto | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
 
-  // Observa en tiempo real las solicitudes dirigidas al programador actual
-  // Se actualiza automáticamente cuando hay cambios en Firebase
+  // Carga solicitudes dirigidas al programador actual
   useEffect(() => {
-    if (!user?.uid) return;
-    const subscription = getApplicationsForProgrammer(user.uid).subscribe({
+    if (!user?.userId) return;
+    const subscription = getApplicationsByProgrammer(user.userId).subscribe({
       next: (data) => setApplications(data),
-      error: (err) => console.error("Error fetching applications:", err),
+      error: (err) => console.error("❌ Error al cargar solicitudes:", err),
     });
     return () => subscription.unsubscribe();
-  }, [user?.uid]);
+  }, [user?.userId]);
 
-  // IMPORTANTE: Cambia estado a "accepted" y notifica al cliente por email
-  // El try-catch interno permite que errores de email no rompan la aceptación
+  // Aceptar solicitud
   const handleAccept = async () => {
     if (!selectedApp) return;
     setIsLoading(true);
     try {
-      await updateApplicationStatus(selectedApp.id, "accepted", {
+      const updateDto: UpdateApplicationStatusDto = {
+        status: ApplicationStatus.ACCEPTED,
         meetingLink: meetingLink || undefined,
-      }).toPromise();
+      };
       
-      // Enviar email de aceptación al cliente - usamos clientName como fallback
-      try {
-        await notifyApplicationAccepted(
-          selectedApp.clientName,
-          user?.displayName || "Programador",
-          selectedApp.subject,
-          meetingLink
-        );
-      } catch (emailError) {
-        console.warn("Error sending acceptance email:", emailError);
-      }
+      await updateApplicationStatus(selectedApp.id, updateDto).toPromise();
+      
+      // TODO: Enviar email de notificación (mover al backend)
       
       setShowAcceptModal(false);
       setMeetingLink("");
       setSelectedApp(null);
     } catch (error) {
-      console.error("Error accepting application:", error);
+      console.error("❌ Error al aceptar solicitud:", error);
       alert("Error al aceptar la solicitud");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // IMPORTANTE: Cambia estado a "rejected" y notifica al cliente por email
-  // El try-catch interno permite que errores de email no rompan el rechazo
+  // Rechazar solicitud
   const handleReject = async () => {
     if (!selectedApp) return;
     setIsLoading(true);
     try {
-      await updateApplicationStatus(selectedApp.id, "rejected", {
+      const updateDto: UpdateApplicationStatusDto = {
+        status: ApplicationStatus.REJECTED,
         rejectionReason: rejectReason || undefined,
-      }).toPromise();
+      };
       
-      // Enviar email de rechazo al cliente
-      try {
-        await notifyApplicationRejected(
-          selectedApp.clientName,
-          user?.displayName || "Programador",
-          selectedApp.subject,
-          rejectReason
-        );
-      } catch (emailError) {
-        console.warn("Error sending rejection email:", emailError);
-      }
+      await updateApplicationStatus(selectedApp.id, updateDto).toPromise();
+      
+      // TODO: Enviar email de notificación (mover al backend)
       
       setShowRejectModal(false);
       setRejectReason("");
       setSelectedApp(null);
     } catch (error) {
-      console.error("Error rejecting application:", error);
+      console.error("❌ Error al rechazar solicitud:", error);
       alert("Error al rechazar la solicitud");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const getStatusStyle = (status: string) => {
-    const map: Record<string, string> = {
-      pending: "bg-accent/20 text-accent border border-accent/40",
-      accepted: "bg-green-500/20 text-green-400 border border-green-500/40",
-      rejected: "bg-red-500/20 text-red-400 border border-red-500/40",
-      completed: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40",
-      cancelled: "bg-accent/10 text-accent/60 border border-accent/20",
+  const getStatusStyle = (status: ApplicationStatus) => {
+    const map: Record<ApplicationStatus, string> = {
+      [ApplicationStatus.PENDING]: "bg-accent/20 text-accent border border-accent/40",
+      [ApplicationStatus.ACCEPTED]: "bg-green-500/20 text-green-400 border border-green-500/40",
+      [ApplicationStatus.REJECTED]: "bg-red-500/20 text-red-400 border border-red-500/40",
+      [ApplicationStatus.COMPLETED]: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40",
+      [ApplicationStatus.CANCELLED]: "bg-accent/10 text-accent/60 border border-accent/20",
     };
     return map[status] || "bg-accent/20";
   };
 
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, string> = {
-      pending: "Pendiente",
-      accepted: "Aceptada",
-      rejected: "Rechazada",
-      completed: "Completada",
-      cancelled: "Cancelada",
+  const getStatusLabel = (status: ApplicationStatus) => {
+    const labels: Record<ApplicationStatus, string> = {
+      [ApplicationStatus.PENDING]: "Pendiente",
+      [ApplicationStatus.ACCEPTED]: "Aceptada",
+      [ApplicationStatus.REJECTED]: "Rechazada",
+      [ApplicationStatus.COMPLETED]: "Completada",
+      [ApplicationStatus.CANCELLED]: "Cancelada",
     };
     return labels[status] || status;
   };
 
-  const getPendingCount = () => applications.filter((a) => a.status === "pending").length;
+  const getPendingCount = () => applications.filter((a) => a.status === ApplicationStatus.PENDING).length;
 
   return (
     <div className="w-full bg-secondary border border-accent/20 rounded-2xl shadow-lg overflow-hidden">
@@ -174,7 +160,7 @@ export default function ProgrammerApplications() {
                     >
                       <Eye size={16} />
                     </button>
-                    {app.status === "pending" && (
+                    {app.status === ApplicationStatus.PENDING && (
                       <>
                         <button
                           onClick={() => {
@@ -287,7 +273,7 @@ export default function ProgrammerApplications() {
                 </div>
               </div>
 
-              {selectedApp.status === "accepted" && selectedApp.meetingLink && (
+              {selectedApp.status === ApplicationStatus.ACCEPTED && selectedApp.meetingLink && (
                 <div>
                   <label className="block text-xs font-semibold text-accent/60 uppercase">Link de Reunión</label>
                   <a
@@ -301,7 +287,7 @@ export default function ProgrammerApplications() {
                 </div>
               )}
 
-              {selectedApp.status === "rejected" && selectedApp.rejectionReason && (
+              {selectedApp.status === ApplicationStatus.REJECTED && selectedApp.rejectionReason && (
                 <div>
                   <label className="block text-xs font-semibold text-accent/60 uppercase">Razón de Rechazo</label>
                   <p className="text-foreground mt-1 bg-red-500/10 p-3 rounded-lg border border-red-500/20">
@@ -310,7 +296,7 @@ export default function ProgrammerApplications() {
                 </div>
               )}
 
-              {selectedApp.status === "pending" && (
+              {selectedApp.status === ApplicationStatus.PENDING && (
                 <div className="grid grid-cols-2 gap-3 pt-4 border-t border-accent/20">
                   <button
                     onClick={() => {

@@ -1,4 +1,5 @@
 import RoleGuard from "@/app/auth/guards/RoleWard";
+import { Role } from "@/app/lib/schema/types";
 
 export default function Dashboard({
   children,
@@ -7,7 +8,7 @@ export default function Dashboard({
 }>) {
   return (
     <>
-      <RoleGuard allowedRoles={["admin"]}>
+      <RoleGuard allowedRoles={[Role.ADMIN]}>
         {children}
       </RoleGuard>
     </>

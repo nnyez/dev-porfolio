@@ -1,28 +1,29 @@
 "use client";
 import RoleGuard from "@/app/auth/guards/RoleWard";
-import { getAllUsers } from "@/app/lib/firebaseRepository";
-import { AppUser } from "@/app/lib/types";
+import { getAllUsers } from "@/app/lib/deprecated/firebase/firebaseRepository";
+import { AppUser } from "@/app/lib/config/types";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import RoleSelecter from "../ui/RoleSelecter";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth } from "@/app/lib/context/Auth/AuthContext";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import Link from "next/link";
+import { Role } from "@/app/lib/schema/types";
 export default function Users() {
   const [users, setUsers] = useState<AppUser[]>([]);
   const { user } = useAuth();
 
   useEffect(() => {
-    const subscription = getAllUsers(user?.uid || "").subscribe({
+    const subscription = getAllUsers(user?.userId?.toString() || "").subscribe({
       next: (data) => setUsers(data),
       error: (err) => console.error("Error fetching users:", err),
     });
     return () => subscription.unsubscribe();
-  }, [user?.uid]);
+  }, [user?.userId]);
   return (
-    <RoleGuard allowedRoles={["admin"]} src="/dashboard/profile">
+    <RoleGuard allowedRoles={[Role.ADMIN]} src="/dashboard/profile">
       <div className="flex flex-col w-full py-6 md:py-10 px-4 sm:px-6 md:px-8">
         <div className="mb-6 md:mb-10">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">Gestión de Usuarios</h1>

@@ -2,12 +2,11 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "@/firebase.config";
-import { AppUser, UserBase } from "../lib/types";
+import { auth } from "@/firebase.config";
+import {  UserBase } from "../../config/types";
 // Importamos RxJS
 import { Observable, of, switchMap, map } from "rxjs";
-import { getUserData } from "../lib/firebaseRepository";
+import { getUserData } from "../../deprecated/firebase/firebaseRepository";
 
 interface AuthContextType {
   user: User | null;
@@ -21,13 +20,35 @@ const AuthContext = createContext<AuthContextType>({
   userData: null,
 });
 
-export const useAuth = () => useContext(AuthContext);
+/**
+ * @deprecated This hook is deprecated. Use `useAuth()` from '@/app/lib/auth/AuthService' instead.
+ * 
+ * This hook will be removed in a future version. Please migrate to the new authentication system.
+ * 
+ * @returns {AuthContextType} The deprecated auth context
+ */
+export const useAuth = () => {
 
+  return useContext(AuthContext);
+};
+
+/**
+ * @deprecated This component is deprecated. Use the new AuthProvider from '@/app/lib/context/Auth/AuthContext' instead.
+ * 
+ * This provider will be removed in a future version. Please migrate to the new authentication system.
+ * Migration guide: See /docs/SETUP_Y_DEPLOYMENT.md
+ * 
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components
+ * @returns {JSX.Element} The deprecated auth provider
+ */
 export default function AuthProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+
   const [user, setUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserBase | null>(null);
   const [loading, setLoading] = useState(true);

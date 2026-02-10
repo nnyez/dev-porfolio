@@ -1,4 +1,4 @@
-import { signInWithGoogle as registerGoogleUser } from "@/app/lib/firebaseAuth";
+import { signInWithGoogle as registerGoogleUser } from "@/app/lib/deprecated/firebase/firebaseAuth";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +15,7 @@ export default function ButtonGoogle({
       router.push("/dashboard/profile");
     } catch (erro) {
       const error = erro as Error;
-      console.log("Error capturado en el componente Register:", error);
+      console.error("Error capturado en el componente Register:", error);
     }
   };
   return (

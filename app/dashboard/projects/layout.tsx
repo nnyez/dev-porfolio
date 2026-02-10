@@ -1,4 +1,5 @@
 import RoleGuard from "@/app/auth/guards/RoleWard";
+import { Role } from "@/app/lib/schema/types";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export default function Layout({
 }>) {
   return (
     <section className="min-w-full">
-      <RoleGuard allowedRoles={["admin", "programmer"]}>{children}</RoleGuard>
+      <RoleGuard allowedRoles={[Role.ADMIN, Role.PROGRAMMER]}>{children}</RoleGuard>
     </section>
   );
 }

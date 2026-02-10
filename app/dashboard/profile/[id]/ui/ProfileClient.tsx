@@ -1,9 +1,10 @@
 "use client";
-import { useAuth } from "@/app/context/AuthContext";
-import { AppUser } from "@/app/lib/types";
+import { useAuth } from "@/app/lib/context/Auth/AuthContext";
+import { AppUser } from "@/app/lib/config/types";
 import FormProfile from "../../ui/FormProfile";
+import { UserProfile } from "@/app/lib/schema/UserProfile";
 import { useEffect, useState } from "react";
-import { getUserData } from "@/app/lib/firebaseRepository";
+import { getUserData } from "@/app/lib/deprecated/firebase/firebaseRepository";
 import AvailabilityScheduler from "../../../standard-applications/ui/AvailabilityScheduler";
 import OptimizedImage from "@/app/ui/shared/OptimizedImage";
 
@@ -28,15 +29,15 @@ export default function ProfileClient({ userId }: { userId: string }) {
             <h1 className="mb-6 text-4xl font-bold">User Profile</h1>
             <div className="bg-alt relative mb-6 aspect-square w-72 overflow-hidden rounded-full">
               <OptimizedImage
-                src={userD?.photoURL || "/profile.svg"}
+                src={userD?.photoUrl || "/profile.svg"}
                 alt="User Profile"
                 fill
                 className="object-cover"
               />
             </div>
-            <FormProfile userData={userD} canEdit={userData?.uid === userId} />
+            <FormProfile userData={userD as unknown as UserProfile} canEdit={userData?.auth?.userId?.toString() === userId} />
           </div>
-          <AvailabilityScheduler onlyView={userData?.uid !== userId} />
+          <AvailabilityScheduler onlyView={userData?.auth?.userId?.toString() !== userId} />
         </>
       ) : (
         <p>Loading...</p>

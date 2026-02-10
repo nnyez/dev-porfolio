@@ -1,7 +1,13 @@
+/**
+ * @deprecated Este módulo está deprecado y no debe ser utilizado.
+ * Las funciones aquí contenidas han sido reemplazadas por alternativas más recientes.
+ * Por favor, utilizar los servicios actualizados en lugar de este módulo.
+ */
+
 import { auth, db, googleProvider } from "@/firebase.config";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { AppUser } from "./types";
+import { AppUser } from "../../config/types";
 
 interface FirebaseError {
   code: string;
@@ -72,7 +78,7 @@ export async function signInWithGoogle() {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
-        photoURL: user.photoURL, // Es útil guardar la foto
+        photoUrl: user.photoUrl, // Es útil guardar la foto
         role: "standard",
       });
     } else {
@@ -83,7 +89,7 @@ export async function signInWithGoogle() {
         {
           email: user.email, // Actualizamos email por si cambió en Google
           displayName: user.displayName,
-          photoURL: user.photoURL,
+          photoUrl: user.photoUrl,
         },
         { merge: true },
       );

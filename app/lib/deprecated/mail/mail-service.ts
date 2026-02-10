@@ -1,3 +1,9 @@
+/**
+ * @deprecated Este módulo está deprecado y no debe ser utilizado.
+ * Las funciones aquí contenidas han sido reemplazadas por alternativas más recientes.
+ * Por favor, utilizar los servicios actualizados en lugar de este módulo.
+ */
+
 'use server';
 import nodemailer from 'nodemailer';
 

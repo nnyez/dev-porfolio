@@ -1,20 +1,22 @@
 "use client";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { getAllProjects } from "@/app/lib/firebaseRepository";
-import { Project } from "@/app/lib/types";
+import { getAllProjects, getProjectsByUserId } from "@/app/lib/projects/ProjectsRepository";
+import { ProjectResponseDto } from "@/app/lib/schema/Project";
 import { useEffect, useState } from "react";
 import { CellProject } from "./ui/CellProject";
 import ModalProject from "./ui/ModalProject";
-import { useAuth } from "@/app/context/AuthContext";
-import { where } from "firebase/firestore";
+import { useAuth } from "@/app/lib/context/Auth/AuthContext";
+import { Role } from "@/app/lib/schema/types";
 
 export default function Projects() {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectResponseDto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const { userData } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editData, setEditData] = useState<Project | undefined>(undefined);
+  const [editData, setEditData] = useState<ProjectResponseDto | undefined>(undefined);
   const [modalType, setModalType] = useState<"create" | "edit">("create");
 
   const openCreate = () => {
@@ -23,28 +25,48 @@ export default function Projects() {
     setIsModalOpen(true);
   };
 
-  const openEdit = (project: Project) => {
+  const openEdit = (project: ProjectResponseDto) => {
     setModalType("edit");
     setEditData(project);
     setIsModalOpen(true);
   };
 
-  useEffect(() => {
+  const refreshProjects = () => {
+    setLoading(true);
     if (!userData) return;
-    if (userData.role === "programmer") {
-      const q = where("ownerUid", "==", userData.uid);
-      const subscription = getAllProjects(q).subscribe({
-        next: (data) => setProjects(data),
-        error: (err) => console.error("Error fetching projects:", err),
+    if (userData.auth?.rol === Role.PROGRAMMER) {
+      const subscription = getProjectsByUserId(userData.auth?.userId || 0).subscribe({
+        next: (data) => {
+          setProjects(data);
+          setError(null);
+          setLoading(false);
+        },
+        error: (err) => {
+          console.error("Error fetching projects:", err);
+          setError("Error al cargar los proyectos");
+          setLoading(false);
+        },
       });
       return () => subscription.unsubscribe();
-    } else if (userData.role === "admin") {
+    } else if (userData.auth?.rol === Role.ADMIN) {
       const subscription = getAllProjects().subscribe({
-        next: (data) => setProjects(data),
-        error: (err) => console.error("Error fetching projects:", err),
+        next: (data) => {
+          setProjects(data);
+          setError(null);
+          setLoading(false);
+        },
+        error: (err) => {
+          console.error("Error fetching projects:", err);
+          setError("Error al cargar los proyectos");
+          setLoading(false);
+        },
       });
       return () => subscription.unsubscribe();
     }
+  };
+
+  useEffect(() => {
+    refreshProjects();
   }, [userData]);
 
   return (
@@ -65,7 +87,16 @@ export default function Projects() {
         </button>
       </div>
       <div className="flex-1 px-4 sm:px-6 md:px-8 py-6 md:py-10 w-full">
-        {projects.length === 0 ? (
+        {error && (
+          <div className="rounded-lg bg-error/10 border-2 border-error/40 p-4 text-sm text-error font-medium mb-6">
+            {error}
+          </div>
+        )}
+        {loading ? (
+          <div className="flex h-96 flex-col items-center justify-center text-center">
+            <p className="text-accent/60 text-lg md:text-xl">Cargando proyectos...</p>
+          </div>
+        ) : projects.length === 0 ? (
           <div className="flex h-96 flex-col items-center justify-center text-center">
             <p className="text-accent/60 text-lg md:text-xl">Aún no tienes proyectos</p>
             <button
@@ -77,7 +108,7 @@ export default function Projects() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-6">
-            {projects.map((project: Project) => (
+            {projects.map((project: ProjectResponseDto) => (
               <CellProject
                 key={project.id}
                 project={project}
@@ -92,6 +123,7 @@ export default function Projects() {
         onClose={() => setIsModalOpen(false)}
         type={modalType}
         projectData={editData}
+        onSuccess={refreshProjects}
       />
     </main>
   );

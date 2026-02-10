@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { updateUserRole } from "@/app/lib/firebaseRepository";
+import { updateUserRole } from "@/app/lib/deprecated/firebase/firebaseRepository";
 interface Props {
   userId: string;
   currentRole: string;

@@ -1,5 +1,5 @@
 "use client";
-import { AppUser } from "@/app/lib/types";
+import { AppUser } from "@/app/lib/config/types";
 import OptimizedImage from "@/app/ui/shared/OptimizedImage";
 
 export function CellUser({
@@ -26,7 +26,7 @@ export function CellUser({
       {/* Foto */}
       <div className="relative mx-auto mb-4 h-32 w-32 overflow-hidden rounded-xl">
         <OptimizedImage
-          src={programmer.photoURL ? programmer.photoURL : "/profile.svg"}
+          src={programmer.photoUrl ? programmer.photoUrl : "/profile.svg"}
           alt={programmer.displayName || "Profile Picture"}
           fill
           objectFit="fill"

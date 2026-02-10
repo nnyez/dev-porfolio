@@ -1,16 +1,38 @@
 "use client";
-import { updateUserData } from "@/app/lib/firebaseRepository";
-import { AppUser } from "@/app/lib/types";
+import { updateUserData } from "@/app/lib/deprecated/firebase/firebaseRepository";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { UserProfile } from "@/app/lib/schema/UserProfile";
+import { Role } from "@/app/lib/schema/types";
+import {
+  patchStandardProfile,
+  patchDeveloperProfile,
+} from "@/app/lib/users/UsersRepository";
+import {
+  CreateStandardProfileDto,
+  UpdateStandardProfileDto,
+  PatchStandardProfileDto,
+} from "@/app/lib/schema/StandardProfile";
+import {
+  CreateDeveloperProfileDto,
+  UpdateDeveloperProfileDto,
+  PatchDeveloperProfileDto,
+} from "@/app/lib/schema/DeveloperProfile";
+import { useAuth } from "@/app/lib/context/Auth/AuthContext";
 
 const userProfileSchema = z.object({
   displayName: z.string().min(1, "Display Name is required"),
   email: z.email("Invalid email address"),
   phoneNumber: z.string().optional().or(z.literal("")),
-  photoURL: z.string().url("Invalid URL").optional().or(z.literal("")),
+  photoUrl: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || val.trim() === "" || z.string().url().safeParse(val).success,
+      { message: "Invalid URL" }
+    ),
   title: z.string().min(1, "Title is required").optional().or(z.literal("")),
   bio: z.string().min(1, "Bio is required").optional().or(z.literal("")),
   experienceYears: z.coerce
@@ -22,13 +44,14 @@ type UserProfileData = z.infer<typeof userProfileSchema>;
 
 export default function Profile({
   userData,
-  canEdit=true,
+  canEdit = true,
 }: {
-  userData: AppUser;
+  userData: UserProfile;
   canEdit?: boolean;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [firebaseError, setFirebaseError] = useState("");
+  const { refreshUserData } = useAuth();
 
   const {
     register,
@@ -40,8 +63,8 @@ export default function Profile({
     defaultValues: {
       displayName: "",
       email: "",
-      phoneNumber: "",
-      photoURL: "",
+      phoneNumber: "",  
+      photoUrl: "",
       title: "",
       bio: "",
       experienceYears: 0,
@@ -49,235 +72,341 @@ export default function Profile({
   });
 
   useEffect(() => {
-    if (userData?.role === "programmer" || userData?.role === "admin") {
-      const user = userData as AppUser;
+    if (
+      userData?.auth.rol === Role.PROGRAMMER ||
+      userData?.auth.rol === Role.ADMIN
+    ) {
+      const user = userData as UserProfile;
 
       reset({
-        displayName: user?.displayName,
-        email: user?.email,
+        displayName: user?.auth.name,
+        email: user?.auth.email,
         phoneNumber: user?.phoneNumber || "",
-        photoURL: user?.photoURL || "",
+        photoUrl: user?.photoUrl || "",
         title: user?.title,
         experienceYears: user?.experienceYears,
         bio: user?.bio,
       });
     } else if (userData) {
       reset({
-        displayName: userData?.displayName,
-        email: userData?.email,
+        displayName: userData?.auth.name,
+        email: userData?.auth.email,
         phoneNumber: userData?.phoneNumber || "",
-        photoURL: userData?.photoURL || "",
+        photoUrl: userData?.photoUrl || "",
       });
     }
   }, [userData, reset]);
 
   const handleSubmitProfile = (data: UserProfileData) => {
-    console.log("Submitting profile data:", data);
+    setFirebaseError("");
 
-    const action$ = updateUserData(userData!.uid, data);
+    console.log("📝 Datos del formulario recibidos:", data);
 
-    action$.subscribe({
-      next: (result) => {
-        if (result.success) {
-          console.log("Profile updated successfully");
-          setIsEditing(false);
-        } else {
-          setFirebaseError(result.message || "Error updating profile");
+    const isProgrammer =
+      userData?.auth.rol === Role.PROGRAMMER ||
+      userData?.auth.rol === Role.ADMIN;
+
+    try {
+      if (isProgrammer) {
+        // Crear DTO para Developer Profile - solo con campos que tienen valor
+        const developerDto: PatchDeveloperProfileDto = {};
+        
+        if (data.photoUrl && data.photoUrl.trim()) {
+          developerDto.photoUrl = data.photoUrl.trim();
         }
-      },
-      error: (err) => {
-        console.error("Error updating profile:", err);
-        setFirebaseError("Error updating profile");
-      },
-    });
+        if (data.phoneNumber && data.phoneNumber.trim()) {
+          developerDto.phoneNumber = data.phoneNumber.trim();
+        }
+        if (data.title && data.title.trim()) {
+          developerDto.title = data.title.trim();
+        }
+        if (data.bio && data.bio.trim()) {
+          developerDto.bio = data.bio.trim();
+        }
+        if (data.experienceYears !== undefined && data.experienceYears > 0) {
+          developerDto.experienceYears = data.experienceYears;
+        }
+
+        console.log("📤 Enviando DTO Developer:", developerDto);
+
+        // Usar PATCH para actualizar/crear
+        patchDeveloperProfile(userData.id, developerDto).subscribe({
+          next: async (response) => {
+            setIsEditing(false);
+            console.log("✅ Perfil DEVELOPER actualizado:", response);
+            await refreshUserData();
+            // Aquí puedes mostrar un toast de éxito si lo deseas
+          },
+          error: (error) => {
+            console.error("❌ Error al actualizar perfil DEVELOPER:", error);
+            setFirebaseError(
+              error?.message ||
+                "Error al actualizar el perfil. Por favor, intenta de nuevo.",
+            );
+          },
+        });
+      } else {
+        // Crear DTO para Standard Profile - solo con campos que tienen valor
+        const standardDto: PatchStandardProfileDto = {};
+        
+        if (data.photoUrl && data.photoUrl.trim()) {
+          standardDto.photoUrl = data.photoUrl.trim();
+        }
+        if (data.phoneNumber && data.phoneNumber.trim()) {
+          standardDto.phoneNumber = data.phoneNumber.trim();
+        }
+
+        console.log("📤 Enviando DTO Standard:", standardDto);
+
+        // Usar PATCH para actualizar/crear
+        patchStandardProfile(userData.id, standardDto).subscribe({
+          next: async (response) => {
+            setIsEditing(false);
+            console.log("✅ Perfil STANDARD actualizado:", response);
+            await refreshUserData();
+            // Aquí puedes mostrar un toast de éxito si lo deseas
+          },
+          error: (error) => {
+            console.error("❌ Error al actualizar perfil STANDARD:", error);
+            setFirebaseError(
+              error?.message ||
+                "Error al actualizar el perfil. Por favor, intenta de nuevo.",
+            );
+          },
+        });
+      }
+    } catch (err) {
+      console.error("❌ Error inesperado:", err);
+      setFirebaseError(
+        "Error inesperado. Por favor, intenta de nuevo más tarde.",
+      );
+    }
   };
 
   return (
-
     <form
       onSubmit={handleSubmit(handleSubmitProfile)}
-      className={`bg-secondary border-2 border-accent/20 rounded-2xl p-4 sm:p-6 md:p-8 shadow-xl w-full ${
-        userData?.role === "programmer" || userData?.role === "admin"
+      className={`bg-secondary border-accent/20 w-full rounded-2xl border-2 p-4 shadow-xl sm:p-6 md:p-8 ${
+        userData?.auth.rol === Role.PROGRAMMER ||
+        userData?.auth.rol === Role.ADMIN
           ? "grid grid-cols-1 md:grid-cols-2"
           : "grid grid-cols-1"
       } gap-4 md:gap-6`}
     >
-      {/* Display Name */}
-      <div>
-        <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="displayName">
-          Nombre
-        </label>
-        <input
-          disabled={!isEditing || !canEdit}
-          {...register("displayName")}
-          type="text"
-          id="displayName"
-          placeholder="Tu nombre"
-          className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
-        />
-        {errors.displayName && (
-          <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.displayName.message}</p>
-        )}
-      </div>
-
-      {/* Email */}
-      <div>
-        <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="email">
-          Email
-        </label>
-        <input
-          disabled={!isEditing || !canEdit}
-          {...register("email")}
-          type="email"
-          id="email"
-          placeholder="tu@email.com"
-          className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
-        />
-        {errors.email && (
-          <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.email.message}</p>
-        )}
-      </div>
-
-      {/* Phone Number */}
-      <div>
-        <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="phoneNumber">
-          Teléfono
-        </label>
-        <input
-          disabled={!isEditing || !canEdit}
-          {...register("phoneNumber")}
-          type="tel"
-          id="phoneNumber"
-          placeholder="+1 (555) 000-0000"
-          className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
-        />
-        {errors.phoneNumber && (
-          <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.phoneNumber.message}</p>
-        )}
-      </div>
-
-      {/* Photo URL */}
-      <div>
-        <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="photoURL">
-          Foto URL
-        </label>
-        <input
-          disabled={!isEditing || !canEdit}
-          {...register("photoURL")}
-          type="url"
-          id="photoURL"
-          placeholder="https://..."
-          className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
-        />
-        {errors.photoURL && (
-          <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.photoURL.message}</p>
-        )}
-      </div>
-
-      {/* Programmer/Admin Fields */}
-      {userData?.role === "programmer" || userData?.role === "admin" ? (
-        <>
-          {/* Title */}
-          <div>
-            <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="title">
-              Título
-            </label>
-            <input
-              disabled={!isEditing || !canEdit}
-              {...register("title")}
-              type="text"
-              id="title"
-              placeholder="e.g., Full Stack Developer"
-              className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
-            />
-            {errors.title && (
-              <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.title.message}</p>
-            )}
-          </div>
-
-          {/* Experience Years */}
-          <div>
-            <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="experienceYears">
-              Años de Experiencia
-            </label>
-            <input
-              disabled={!isEditing || !canEdit}
-              {...register("experienceYears", { valueAsNumber: true })}
-              type="number"
-              id="experienceYears"
-              placeholder="0"
-              className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60"
-            />
-            {errors.experienceYears && (
-              <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.experienceYears.message}</p>
-            )}
-          </div>
-
-          {/* Bio */}
-          <div className="md:col-span-2">
-            <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2" htmlFor="bio">
-              Biografía
-            </label>
-            <textarea
-              disabled={!isEditing || !canEdit}
-              {...register("bio")}
-              id="bio"
-              rows={3}
-              placeholder="Cuéntanos sobre ti..."
-              className="w-full rounded-lg border-2 border-resalt bg-primary px-3 sm:px-4 py-2 sm:py-3 text-base text-foreground placeholder-accent/50 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-primary/60 resize-none"
-            />
-            {errors.bio && (
-              <p className="mt-1 sm:mt-2 text-xs text-error font-medium">{errors.bio.message}</p>
-            )}
-          </div>
-        </>
-      ) : null}
-
-      {/* Error Message */}
-      {firebaseError && (
-        <div className="md:col-span-2 rounded-lg bg-error/10 border-2 border-error/40 p-4 text-sm text-error font-medium">
-          {firebaseError}
-        </div>
-      )}
-
-      {/* Action Buttons */}
-      {!canEdit ? null : (
-        <div className={`flex flex-col sm:flex-row gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-accent/20 ${userData?.role === "programmer" || userData?.role === "admin" ? "md:col-span-2" : ""}`}>
-          {isEditing ? (
-            <>
-              <button
-                type="button"
-                onClick={() => setIsEditing(false)}
-                className="flex-1 rounded-lg border border-accent/30 bg-transparent px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-accent hover:bg-accent/10 transition-all"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 rounded-lg bg-accent text-secondary px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold hover:bg-resalt transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-secondary border-t-transparent"></div>
-                    Guardando...
-                  </>
-                ) : (
-                  "Guardar Cambios"
-                )}
-              </button>
-            </>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setIsEditing(true)}
-              className="w-full rounded-lg bg-accent text-secondary px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold hover:bg-resalt transition-all"
-            >
-              Editar Perfil
-            </button>
+        {/* Display Name */}
+        <div>
+          <label
+            className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+            htmlFor="displayName"
+          >
+            Nombre
+          </label>
+          <input
+            disabled={!isEditing || !canEdit}
+            {...register("displayName")}
+            type="text"
+            id="displayName"
+            placeholder="Tu nombre"
+            className="border-resalt bg-primary text-foreground placeholder-accent/50 focus:border-accent focus:ring-accent/30 disabled:bg-primary/60 w-full rounded-lg border-2 px-3 py-2 text-base transition-all focus:ring-2 disabled:cursor-not-allowed disabled:opacity-70 sm:px-4 sm:py-3"
+          />
+          {errors.displayName && (
+            <p className="text-error mt-1 text-xs font-medium sm:mt-2">
+              {errors.displayName.message}
+            </p>
           )}
         </div>
-      )}
-    </form>
-  );
+
+        {/* Email */}
+        <div>
+          <label
+            className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+            htmlFor="email"
+          >
+            Email
+          </label>
+          <input
+            disabled={!isEditing || !canEdit}
+            {...register("email")}
+            type="email"
+            id="email"
+            placeholder="tu@email.com"
+            className="border-resalt bg-primary text-foreground placeholder-accent/50 focus:border-accent focus:ring-accent/30 disabled:bg-primary/60 w-full rounded-lg border-2 px-3 py-2 text-base transition-all focus:ring-2 disabled:cursor-not-allowed disabled:opacity-70 sm:px-4 sm:py-3"
+          />
+          {errors.email && (
+            <p className="text-error mt-1 text-xs font-medium sm:mt-2">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
+
+        {/* Phone Number */}
+        <div>
+          <label
+            className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+            htmlFor="phoneNumber"
+          >
+            Teléfono
+          </label>
+          <input
+            disabled={!isEditing || !canEdit}
+            {...register("phoneNumber")}
+            type="tel"
+            id="phoneNumber"
+            placeholder="+1 (555) 000-0000"
+            className="border-resalt bg-primary text-foreground placeholder-accent/50 focus:border-accent focus:ring-accent/30 disabled:bg-primary/60 w-full rounded-lg border-2 px-3 py-2 text-base transition-all focus:ring-2 disabled:cursor-not-allowed disabled:opacity-70 sm:px-4 sm:py-3"
+          />
+          {errors.phoneNumber && (
+            <p className="text-error mt-1 text-xs font-medium sm:mt-2">
+              {errors.phoneNumber.message}
+            </p>
+          )}
+        </div>
+
+        {/* Photo URL */}
+        <div>
+          <label
+            className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+            htmlFor="photoUrl"
+          >
+            Foto URL
+          </label>
+          <input
+            disabled={!isEditing || !canEdit}
+            {...register("photoUrl")}
+            type="url"
+            id="photoUrl"
+            placeholder="https://..."
+            className="border-resalt bg-primary text-foreground placeholder-accent/50 focus:border-accent focus:ring-accent/30 disabled:bg-primary/60 w-full rounded-lg border-2 px-3 py-2 text-base transition-all focus:ring-2 disabled:cursor-not-allowed disabled:opacity-70 sm:px-4 sm:py-3"
+          />
+          {errors.photoUrl && (
+            <p className="text-error mt-1 text-xs font-medium sm:mt-2">
+              {errors.photoUrl.message}
+            </p>
+          )}
+        </div>
+
+        {/* Programmer/Admin Fields */}
+        {userData?.auth.rol === Role.PROGRAMMER ||
+        userData?.auth.rol === Role.ADMIN ? (
+          <>
+            {/* Title */}
+            <div>
+              <label
+                className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+                htmlFor="title"
+              >
+                Título
+              </label>
+              <input
+                disabled={!isEditing || !canEdit}
+                {...register("title")}
+                type="text"
+                id="title"
+                placeholder="e.g., Full Stack Developer"
+                className="border-resalt bg-primary text-foreground placeholder-accent/50 focus:border-accent focus:ring-accent/30 disabled:bg-primary/60 w-full rounded-lg border-2 px-3 py-2 text-base transition-all focus:ring-2 disabled:cursor-not-allowed disabled:opacity-70 sm:px-4 sm:py-3"
+              />
+              {errors.title && (
+                <p className="text-error mt-1 text-xs font-medium sm:mt-2">
+                  {errors.title.message}
+                </p>
+              )}
+            </div>
+
+            {/* Experience Years */}
+            <div>
+              <label
+                className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+                htmlFor="experienceYears"
+              >
+                Años de Experiencia
+              </label>
+              <input
+                disabled={!isEditing || !canEdit}
+                {...register("experienceYears", { valueAsNumber: true })}
+                type="number"
+                id="experienceYears"
+                placeholder="0"
+                className="border-resalt bg-primary text-foreground placeholder-accent/50 focus:border-accent focus:ring-accent/30 disabled:bg-primary/60 w-full rounded-lg border-2 px-3 py-2 text-base transition-all focus:ring-2 disabled:cursor-not-allowed disabled:opacity-70 sm:px-4 sm:py-3"
+              />
+              {errors.experienceYears && (
+                <p className="text-error mt-1 text-xs font-medium sm:mt-2">
+                  {errors.experienceYears.message}
+                </p>
+              )}
+            </div>
+
+            {/* Bio */}
+            <div className="md:col-span-2">
+              <label
+                className="text-foreground mb-2 block text-xs font-semibold sm:text-sm"
+                htmlFor="bio"
+              >
+                Biografía
+              </label>
+              <textarea
+                disabled={!isEditing || !canEdit}
+                {...register("bio")}
+                id="bio"
+                rows={3}
+                placeholder="Cuéntanos sobre ti..."
+                className="border-resalt bg-primary text-foreground placeholder-accent/50 focus:border-accent focus:ring-accent/30 disabled:bg-primary/60 w-full resize-none rounded-lg border-2 px-3 py-2 text-base transition-all focus:ring-2 disabled:cursor-not-allowed disabled:opacity-70 sm:px-4 sm:py-3"
+              />
+              {errors.bio && (
+                <p className="text-error mt-1 text-xs font-medium sm:mt-2">
+                  {errors.bio.message}
+                </p>
+              )}
+            </div>
+          </>
+        ) : null}
+
+        {/* Error Message */}
+        {firebaseError && (
+          <div className="bg-error/10 border-error/40 text-error rounded-lg border-2 p-4 text-sm font-medium md:col-span-2">
+            {firebaseError}
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        {!canEdit ? null : (
+          <div
+            className={`border-accent/20 flex flex-col gap-2 border-t pt-3 sm:flex-row sm:gap-3 sm:pt-4 ${userData?.auth.rol === Role.PROGRAMMER || userData?.auth.rol === Role.ADMIN ? "md:col-span-2" : ""}`}
+          >
+            {isEditing ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="border-accent/30 text-accent hover:bg-accent/10 flex-1 rounded-lg border bg-transparent px-4 py-2 text-xs font-semibold transition-all sm:px-6 sm:py-3 sm:text-sm"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-accent text-secondary hover:bg-resalt flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-3 sm:text-sm"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="border-secondary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></div>
+                      Guardando...
+                    </>
+                  ) : (
+                    "Guardar Cambios"
+                  )}
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="bg-accent text-secondary hover:bg-resalt w-full rounded-lg px-4 py-2 text-xs font-semibold transition-all sm:px-6 sm:py-3 sm:text-sm"
+              >
+                Editar Perfil
+              </button>
+            )}
+          </div>
+        )}
+      </form>
+    );
 }

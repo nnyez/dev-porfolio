@@ -48,9 +48,9 @@ export function GridCard({
           
           {/* Tecnologías */}
           <div className="flex flex-wrap gap-1 md:gap-2">
-            {chips.map((tech) => (
+            {chips.map((tech, index) => (
               <span
-                key={tech}
+                key={`${tech}-${index}`}
                 className="inline-flex items-center gap-1 rounded-full bg-accent/20 border border-accent/40 px-2 py-1 text-xs md:text-sm font-semibold text-accent"
               >
                 {tech}

@@ -3,20 +3,25 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Trash2, Edit2, X } from "lucide-react";
 import {
-  addServiceApplication,
-  getApplicationsFromClient,
-  updateApplicationStatus,
-  deleteServiceApplication,
-  getAllUsers,
-} from "@/app/lib/firebaseRepository";
-import { ServiceApplication, AppUser } from "@/app/lib/types";
-import { useAuth } from "@/app/context/AuthContext";
-import { notifyNewApplication } from "@/app/lib/email-actions";
+  createApplication,
+  getApplicationsByClient,
+  deleteApplication,
+} from "@/app/lib/applications/ApplicationsRepository";
+import {
+  ApplicationResponseDto,
+  ApplicationStatus,
+  CreateApplicationDto,
+} from "@/app/lib/schema/ServiceApplication";
+import { UserProfile } from "@/app/lib/schema/UserProfile";
+import { getProgrammers } from "@/app/lib/users/UsersRepository";
+import { DeveloperProfileResponseDto } from "@/app/lib/schema/DeveloperProfile";
+import { useAuth } from "@/app/lib/context/Auth/AuthContext";
+import { Role } from "@/app/lib/schema/types";
 
 export default function ServiceApplicationsManager() {
-  const { user } = useAuth();
-  const [applications, setApplications] = useState<ServiceApplication[]>([]);
-  const [programmers, setProgrammers] = useState<(AppUser & { label: string })[]>([]);
+  const { user, userData } = useAuth();
+  const [applications, setApplications] = useState<ApplicationResponseDto[]>([]);
+  const [programmers, setProgrammers] = useState<DeveloperProfileResponseDto[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,49 +36,45 @@ export default function ServiceApplicationsManager() {
     durationMinutes: 60,
   });
 
-  // RxJS Observables: Se suscribe en tiempo real a Firebase
-  // Cuando cambia user.uid, carga las solicitudes del cliente actual
-  useEffect(() => {
-    if (!user?.uid) return;
-    const subscription = getApplicationsFromClient(user.uid).subscribe({
+  // Función para recargar solicitudes
+  const loadApplications = () => {
+    if (!user?.userId) return;
+    const subscription = getApplicationsByClient(user.userId).subscribe({
       next: (data) => setApplications(data),
-      error: (err) => console.error("Error fetching applications:", err),
+      error: (err) => console.error("❌ Error al cargar solicitudes:", err),
     });
     return () => subscription.unsubscribe();
-  }, [user?.uid]);
+  };
 
-  // Obtiene lista de programadores/admins y formatea con su rol
-  // Esto alimenta el dropdown para seleccionar a quién enviar la solicitud
+  // Carga las solicitudes del cliente actual
   useEffect(() => {
-    if (!user?.uid) return;
-    const subscription = getAllUsers(user.uid, undefined).subscribe({
+    loadApplications();
+  }, [user?.userId]);
+
+  // Cargar lista de programadores disponibles
+  useEffect(() => {
+    const subscription = getProgrammers().subscribe({
       next: (data) => {
-        const progList = data
-          .filter((u) => u.role === "programmer" || u.role === "admin")
-          .map((p) => {
-            const roleLabel = p.role === "admin" ? "Administrador" : (p as AppUser).title || "Programador";
-            return {
-              ...p,
-              label: `${p.displayName} (${roleLabel})`,
-            };
-          });
-        setProgrammers(progList);
+        console.log("✅ Programadores cargados:", data);
+        setProgrammers(data);
       },
-      error: (err) => console.error("Error fetching programmers:", err),
+      error: (err) => {
+        console.error("❌ Error al cargar programadores:", err);
+        setProgrammers([]);
+      },
     });
     return () => subscription.unsubscribe();
-  }, [user?.uid]);
+  }, []);
 
   // Abre modal para crear nueva solicitud o editar existente
-  // Si recibe app, rellena los campos con datos actuales
-  const openModal = (app?: ServiceApplication) => {
+  const openModal = (app?: ApplicationResponseDto) => {
     if (app) {
-      setEditingId(app.id);
+      setEditingId(app.id.toString());
       const date = new Date(app.scheduledDate);
       setFormData({
         subject: app.subject,
         description: app.description,
-        programmerUid: app.programmerUid,
+        programmerUid: app.programmerUid.toString(),
         budget: app.budget || "",
         date: date.toISOString().split("T")[0],
         time: `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`,
@@ -94,11 +95,10 @@ export default function ServiceApplicationsManager() {
     setIsModalOpen(true);
   };
 
-  // Procesa el formulario: crea objeto ServiceApplication y lo envía a Firebase
-  // Luego envía email de notificación al programador seleccionado
+  // Crear nueva solicitud
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user?.userId) return;
 
     setIsLoading(true);
     try {
@@ -114,63 +114,48 @@ export default function ServiceApplicationsManager() {
 
       const startTime = scheduledDate.getTime();
       const endTime = startTime + formData.durationMinutes * 60 * 1000;
-      const now = Date.now();
 
-      const payload: ServiceApplication = {
-        id: editingId || crypto.randomUUID(),
-        clientUid: user.uid,
-        clientName: user.displayName || "Cliente",
-        programmerUid: formData.programmerUid,
-        programmerName: programmers.find((p) => p.uid === formData.programmerUid)
-          ?.displayName,
+      const payload: CreateApplicationDto = {
+        programmerUid: parseInt(formData.programmerUid),
         subject: formData.subject,
         description: formData.description,
-        budget: formData.budget || "",
+        budget: formData.budget || undefined,
         scheduledDate: scheduledDate.getTime(),
         startTime,
         endTime,
         durationMinutes: formData.durationMinutes,
-        status: "pending",
-        createdAt: editingId ? applications.find((a) => a.id === editingId)?.createdAt || now : now,
-        updatedAt: now,
       };
 
       if (editingId) {
-        await updateApplicationStatus(editingId, payload.status, payload).toPromise();
+        // TODO: Implementar actualización cuando el backend lo soporte
+        alert("Edición aún no implementada. Por favor, elimina y crea una nueva.");
       } else {
-        await addServiceApplication(payload).toPromise();
-        
-        // IMPORTANTE: Notifica al programador por email cuando recibe nueva solicitud
-        // Busca el email en la lista de programadores y envía notificación
-        const programmer = programmers.find((p) => p.uid === formData.programmerUid);
-        if (programmer?.email) {
-          await notifyNewApplication(
-            programmer.email,
-            user.displayName || "Cliente",
-            formData.subject,
-            formData.description,
-            scheduledDate.getTime()
-          );
-        }
+        await createApplication(user.userId, payload).toPromise();
+        alert("✅ Solicitud creada exitosamente");
+        // Recargar lista de solicitudes
+        loadApplications();
       }
 
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Error submitting application:", error);
+      console.error("❌ Error al guardar solicitud:", error);
       alert("Error al guardar la solicitud");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Eliminar
-  const handleDelete = async (id: string) => {
+  // Eliminar solicitud
+  const handleDelete = async (id: number) => {
     if (!confirm("¿Eliminar solicitud?")) return;
     setIsLoading(true);
     try {
-      await deleteServiceApplication(id).toPromise();
+      await deleteApplication(id).toPromise();
+      alert("✅ Solicitud eliminada exitosamente");
+      // Recargar lista de solicitudes
+      loadApplications();
     } catch (error) {
-      console.error("Error deleting application:", error);
+      console.error("❌ Error al eliminar solicitud:", error);
       alert("Error al eliminar la solicitud");
     } finally {
       setIsLoading(false);
@@ -178,29 +163,29 @@ export default function ServiceApplicationsManager() {
   };
 
   // Renderizar etiqueta de estado
-  const getStatusStyle = (status: string) => {
-    const map: Record<string, string> = {
-      pending:
+  const getStatusStyle = (status: ApplicationStatus) => {
+    const map: Record<ApplicationStatus, string> = {
+      [ApplicationStatus.PENDING]:
         "bg-accent/20 text-accent border border-accent/40",
-      accepted:
+      [ApplicationStatus.ACCEPTED]:
         "bg-green-500/20 text-green-400 border border-green-500/40",
-      rejected:
+      [ApplicationStatus.REJECTED]:
         "bg-red-500/20 text-red-400 border border-red-500/40",
-      completed:
+      [ApplicationStatus.COMPLETED]:
         "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40",
-      cancelled:
+      [ApplicationStatus.CANCELLED]:
         "bg-accent/10 text-accent/60 border border-accent/20",
     };
     return map[status] || "bg-accent/20";
   };
 
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, string> = {
-      pending: "Pendiente",
-      accepted: "Aceptada",
-      rejected: "Rechazada",
-      completed: "Completada",
-      cancelled: "Cancelada",
+  const getStatusLabel = (status: ApplicationStatus) => {
+    const labels: Record<ApplicationStatus, string> = {
+      [ApplicationStatus.PENDING]: "Pendiente",
+      [ApplicationStatus.ACCEPTED]: "Aceptada",
+      [ApplicationStatus.REJECTED]: "Rechazada",
+      [ApplicationStatus.COMPLETED]: "Completada",
+      [ApplicationStatus.CANCELLED]: "Cancelada",
     };
     return labels[status] || status;
   };
@@ -347,8 +332,8 @@ export default function ServiceApplicationsManager() {
                 >
                   <option value="">Selecciona un programador</option>
                   {programmers.map((p) => (
-                    <option key={p.uid} value={p.uid}>
-                      {p.label}
+                    <option key={p.id} value={p.id}>
+                      {p.name}
                     </option>
                   ))}
                 </select>
