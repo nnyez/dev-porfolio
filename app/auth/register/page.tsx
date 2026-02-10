@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
-import ButtonGoogle from "../ui/ButtonGoogle";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { registerUser } from "@/app/lib/auth/AuthService";
@@ -183,8 +182,6 @@ export default function Register() {
           >
             {isSubmitting ? "Registrando..." : "Registrarte"}
           </button>
-
-          <ButtonGoogle />
           <div className="text-foreground mt-2 text-center text-xs md:text-sm">
             <span>¿Tienes cuenta? </span>
             <Link

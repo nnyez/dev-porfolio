@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
-import ButtonGoogle from "../ui/ButtonGoogle";
 import Link from "next/link"; // Para navegar al registro si no tiene cuenta
 import { useRouter } from "next/navigation"; // Para redirigir al éxito
 import { loginUser } from "@/app/lib/auth/AuthService";
@@ -133,8 +132,6 @@ export default function Login() {
           >
             {isSubmitting ? "Entrando..." : "Entrar"}
           </button>
-
-          <ButtonGoogle isRegister={false} />
 
           {/* Link para ir a Registro */}
           <div className="text-foreground mt-2 text-center text-xs md:text-sm">

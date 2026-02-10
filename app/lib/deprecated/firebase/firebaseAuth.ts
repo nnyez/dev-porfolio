@@ -78,7 +78,7 @@ export async function signInWithGoogle() {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
-        photoUrl: user.photoUrl, // Es útil guardar la foto
+        photoUrl: user.photoURL, // Es útil guardar la foto
         role: "standard",
       });
     } else {
@@ -89,7 +89,7 @@ export async function signInWithGoogle() {
         {
           email: user.email, // Actualizamos email por si cambió en Google
           displayName: user.displayName,
-          photoUrl: user.photoUrl,
+          photoUrl: user.photoURL,
         },
         { merge: true },
       );
