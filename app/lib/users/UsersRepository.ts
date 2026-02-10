@@ -627,21 +627,13 @@ export function deleteDeveloperProfile(userId: number) {
  */
 export function getAllDeveloperProfiles() {
   const authSession = getCurrentSession();
-  const token = authSession?.user?.token;
 
-  if (!token) {
-    console.error(
-      "❌ [UsersRepository] No hay token disponible para la autenticación",
-    );
-    return throwError(() => new Error("No hay token de autenticación"));
-  }
 
   return from(
     fetch(`${API_BASE_URL}api/profiles/developers`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     }).then((res) => {
       if (!res.ok) {
