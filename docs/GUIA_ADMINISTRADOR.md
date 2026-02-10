@@ -78,23 +78,17 @@ Contraseña: [contraseña segura]
 
 **Soluciones:**
 
-1. **Verificar rol en Firestore:**
-   - Firebase Console > Firestore
-   - Colección: `users` > tu documento
-   - Campo `role` debe ser: `"admin"`
+1. **Verificar rol en la base de datos:**
+   - Contactar al administrador del sistema
+   - Verificar que tu usuario tenga rol `ADMIN`
 
-2. **Cambiar rol manualmente:**
-   - Acceder a Firestore como propietario del proyecto
-   - Navegar a `users/{tu-uid}`
-   - Cambiar `role: "admin"`
+2. **Cambiar rol (requiere acceso a base de datos):**
+   - Actualizar el campo `role` del usuario a `ADMIN`
    - Logout y login nuevamente
 
-3. **Crear usuario admin desde CLI:**
-   ```bash
-   # Usar Firebase CLI
-   firebase deploy --only functions
-   # Luego usar Cloud Function para crear admin
-   ```
+3. **Registrarse como programador:**
+   - Al registrarse, seleccionar la opción "Quiero ser programador"
+   - El rol será `PROGRAMMER` (no admin, pero con más permisos que `STANDARD`)
 
 ---
 
@@ -156,9 +150,9 @@ Total Solicitudes: 45
 ```
 Status: ✅ Operacional
 
-Firestore: ✅ Normal (234 ops/s)
+Backend API: ✅ Normal
 Auth: ✅ Normal (12 logins/h)
-Storage: ✅ Normal (45% usado)
+Database: ✅ Normal
 CPU: ✅ Normal (23% usado)
 ```
 
@@ -594,7 +588,7 @@ ADMIN
 
 Nivel de Seguridad Actual: ALTO ✓
 
-Firestore Rules Status: ✅ Seguras
+API Security Status: ✅ Seguras
 ├─ Usuarios: Acceso propio únicamente
 ├─ Proyectos: Lectura pública
 ├─ Solicitudes: Acceso de partes
@@ -632,7 +626,7 @@ Firestore Rules Status: ✅ Seguras
 🔒 VERIFICACIÓN DIARIA
 
 □ Logs de intentos fallidos
-□ Firestore Rules aplicadas
+□ API endpoints seguros
 □ Certificado SSL válido
 □ No hay accesos no autorizados
 □ Backup del día completado
@@ -648,7 +642,7 @@ Firestore Rules Status: ✅ Seguras
 
 □ Penetration testing (opcional)
 □ Revisión de dependencias
-□ Actualización de Firebase Rules
+□ Actualización de reglas de seguridad
 □ Análisis de riesgos
 ```
 
@@ -674,7 +668,7 @@ Firestore Rules Status: ✅ Seguras
 ```
 1. Solicitar screenshot del error
 2. Pedir pasos para reproducir
-3. Revisar Logs de Firestore
+3. Revisar Logs del backend
 4. Verificar en consola del navegador (F12)
 5. Contactar a equipo técnico si es necesario
 ```
@@ -715,8 +709,8 @@ Banear Usuario:
 **Diagnóstico:**
 ```
 1. Revisar CPU/Memory en servidor
-2. Verificar Firestore operations/sec
-3. Revisar Cloud Logs
+2. Verificar respuesta del backend API
+3. Revisar Logs
 4. Comprobar conexión a BD
 
 Si está saturado:
@@ -736,7 +730,7 @@ Si está saturado:
 
 **Paso 1: Verificar Status**
 ```
-1. Ir a https://status.firebase.com
+1. Revisar status del backend en Render
 2. Revisar si hay incidents reportados
 3. Revisar status de Vercel/hosting
 4. Comprobar conexión a internet
@@ -750,13 +744,13 @@ vercel --prod
 # Esperar 2-5 minutos
 ```
 
-**Paso 3: Restaurar desde Backup**
+**Paso 3: Contactar Soporte**
 ```
 Si sigue fallando:
-1. Firebase Console > Firestore > Backups
-2. Seleccionar backup más reciente
-3. Click en "Restaurar"
-4. Esperar proceso (5-30 min)
+1. Verificar logs en Render Dashboard
+2. Revisar logs en Vercel
+3. Contactar al equipo técnico
+4. Restaurar desde backup si es necesario
 ```
 
 ### 10.2 Ataque de Seguridad
@@ -793,16 +787,16 @@ Si sigue fallando:
 
 **Paso 1: Confirmar Pérdida**
 ```
-1. Verificar Firestore actual
+1. Verificar base de datos actual
 2. Revisar histórico de cambios
 3. Comprobar último backup disponible
 ```
 
 **Paso 2: Restaurar**
 ```
-1. Firebase Console > Firestore > Backups
+1. Contactar al administrador de base de datos
 2. Seleccionar backup anterior a pérdida
-3. Click "Restaurar"
+3. Restaurar desde backup
 4. Confirmar restauración
 5. Esperar completar (puede tomar horas)
 ```
@@ -821,17 +815,17 @@ Si sigue fallando:
 📞 CONTACTOS DE EMERGENCIA
 
 Equipo Técnico:
-├─ Lead Developer: juan@team.com
-├─ DevOps: carlos@team.com
-└─ Database Admin: maria@team.com
+├─ Lead Developer: contacto@team.com
+├─ DevOps: devops@team.com
+└─ Database Admin: dba@team.com
 
-Soporte Firebase:
-├─ Email: support@firebase.google.com
-├─ Phone: +1-888-111-FIRE
-└─ Help: firebase.google.com/support
+Soporte Backend (Render):
+├─ Email: support@render.com
+├─ Status: status.render.com
+└─ Help: render.com/docs
 
-Soporte Hosting:
-├─ Vercel: support@vercel.com
+Soporte Frontend (Vercel):
+├─ Email: support@vercel.com
 ├─ Status: status.vercel.com
 └─ Help: vercel.com/support
 ```

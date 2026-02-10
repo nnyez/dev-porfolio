@@ -104,7 +104,7 @@ Link: https://portfolio-dev.com/confirm-email/...
 
 ### 2.2 Login / Inicio de Sesión
 
-**Opción A: Con Email y Contraseña**
+**Con Email y Contraseña**
 
 ```
 Login
@@ -118,39 +118,6 @@ Contraseña: [••••••••••     ]
 [Iniciar Sesión]
 
 ¿No tienes cuenta? → [Registrarse]
-¿Olvidaste contraseña? → [Recuperar]
-```
-
-**Opción B: Con Google (Más rápido)**
-
-```
-[🔵 Iniciar sesión con Google]
-
-1. Haz click en el botón
-2. Elige tu cuenta de Google
-3. Autoriza Portfolio Dev
-4. ¡Acceso inmediato!
-```
-
-### 2.3 ¿Olvidaste tu Contraseña?
-
-```
-RECUPERAR CONTRASEÑA
-─────────────────────────────────
-
-Ingresa tu email: [tu-email@gmail.com   ]
-
-[Enviar link de recuperación]
-
-Verás en tu email:
-Subject: Recupera tu Contraseña
-
-Haz click en el link y:
-1. Ingresa nueva contraseña
-2. Confirma contraseña
-3. [Actualizar Contraseña]
-
-¡Listo! Puedes iniciar sesión.
 ```
 
 ---
@@ -905,7 +872,7 @@ Si eliminas tu cuenta:
 **R:** Haz clic en ⋯ (más opciones) en su perfil > Reportar. Describe el problema.
 
 ### P: ¿Mis datos están seguros?
-**R:** Sí. Usamos encriptación y Firebase (Google Cloud). Tus datos no se comparten.
+**R:** Sí. Usamos encriptación y servidores seguros. Tus datos no se comparten.
 
 ### P: ¿Cuánto tiempo toma recibir respuesta?
 **R:** Los programadores tienen 24-48 horas para responder según su configuración.
@@ -980,8 +947,7 @@ Completa:
 ```
 1. Verifica Caps Lock
 2. Intenta "¿Olvidaste contraseña?"
-3. Usa Google para login
-4. Contacta soporte
+3. Contacta soporte
 ```
 
 ### 🌐 REDES SOCIALES
