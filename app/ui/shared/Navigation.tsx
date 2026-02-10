@@ -25,12 +25,6 @@ export default function Navigation(v: boolean) {
         className="hover:text-accent hover:scale-130"
       />
 
-      <NavLink
-        route="/test"
-        text="Test"
-        className="hover:text-accent hover:scale-130"
-      />
-
       {/* Dashboard (Renderizado condicional) */}
       {user && (
         <NavLink

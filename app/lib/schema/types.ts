@@ -1,7 +1,7 @@
 export enum Role {
-  STANDARD = "STANDARD",
-  PROGRAMMER = "PROGRAMMER",
-  ADMIN = "ADMIN",
+  STANDARD = "ROLE_STANDARD",
+  PROGRAMMER = "ROLE_PROGRAMMER",
+  ADMIN = "ROLE_ADMIN",
 }
 
 export interface ProfileExists {
